@@ -1,6 +1,7 @@
 
 #### Abstract:
-
+The paper “Collective navigation of complex networks: Participatory greedy routing” explores the world of IoT devices
+and their abstraction into graphical models. The paper modeled the affect of "defector" nodes in the network's ability to send information from one side of the network to the other. Defector nodes are instantiated in the model and can spread their defector property to their neighbors as well as lose that property. The probability of a node becoming a defector is determined by the presence of defectors in its proximity, the amount of messages sent, and the amount of reward the node gets from sending a message. The paper found compelling results on the importance of the reward each node recieves when it sucessfully delivers a message and the imporance of the state of "hubs" in the network, but their model was tested under very specific circumstances. We plan to investigate into the role of different graph types, algorithms to determine defection,  algorithms to determine kickback, and initial states of the board on the spread of defection.
 
 #### Bibiliography
 
