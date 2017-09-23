@@ -6,16 +6,6 @@ and their abstraction into graphical models. The paper modeled the affect of "de
 #### Bibiliography
 
 
-#### Replication and Extension
-
-
-#### Results
-
-
-
-#### Next Steps
-
-
 ##### Citation:
 Kleineberg, Kaj-Kolja, and Dirk Helbing. “Collective navigation of complex networks: Participatory greedy routing.” Nature News,
 Nature Publishing Group, 6 June 2017, www.nature.com/articles/s41598-017-02910-x. Accessed 21 Sept. 2017.
@@ -67,3 +57,20 @@ origin of the video, they were able to model the time it took for gangnam style 
 geographical distance from origin, or the graphical model distance from the origin. They were then able to indicate the
 validity of their model by showing the linear trend between time to region and distance in their model compared to the lack of
 a trend in time to region and geographical distance to region.
+
+
+#### Replication and Extension
+
+
+#### Results
+
+
+#### Causes for Concern:
+Some problems we may run into include making decisions about how to map the graph into a 2 dimensional space. The paper the
+experiment is based on uses some somewhat complex functions to determine distance, so we will need to either determine how to use those and which parts are important or make our own graph with a its compelling explanation for architecture. Additionally, it may be difficult to determine the best qualities of the graph to vary in order to yield interesting results.
+
+#### Next Steps
+1. Agree on best way to contruct the positions and connections inside the graph.
+2. Write code to make the graph
+3. Write function to simulate message transmission across nodes.
+4. Write functions to update individual nodes with defection probabilities.
