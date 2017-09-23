@@ -1,4 +1,20 @@
 
+#### Abstract:
+
+
+#### Bibiliography
+
+
+#### Replication and Extension
+
+
+#### Results
+
+
+
+#### Next Steps
+
+
 ##### Citation:
 Kleineberg, Kaj-Kolja, and Dirk Helbing. “Collective navigation of complex networks: Participatory greedy routing.” Nature News,
 Nature Publishing Group, 6 June 2017, www.nature.com/articles/s41598-017-02910-x. Accessed 21 Sept. 2017.
