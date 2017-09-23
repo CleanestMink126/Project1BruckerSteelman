@@ -74,3 +74,4 @@ experiment is based on uses some somewhat complex functions to determine distanc
 2. Write code to make the graph
 3. Write function to simulate message transmission across nodes.
 4. Write functions to update individual nodes with defection probabilities.
+5.Run the functions a bunch of times.
