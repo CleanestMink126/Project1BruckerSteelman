@@ -1,4 +1,5 @@
 
+
 ##### Citation:
 Kleineberg, Kaj-Kolja, and Dirk Helbing. “Collective navigation of complex networks: Participatory greedy routing.” Nature News,
 Nature Publishing Group, 6 June 2017, www.nature.com/articles/s41598-017-02910-x. Accessed 21 Sept. 2017.
@@ -11,21 +12,19 @@ closest to the destination. However, they added in a probability that a node wou
 message unsendable and in large numbers invalidates the network. This probability is based on the number of defector neighbors
 and how much a reward the node gets for properly delivering a message. They found that each graph they instantiate either
 collapses into nearly all defector or participant given enough time. The probability of collapsing into each is heavily
-influenced by both the size of the kickback the nodes recieve and the state of some "hubs" in the graph that connect to 
+influenced by both the size of the kickback the nodes recieve and the state of some "hubs" in the graph that connect to
 a large number of nodes. Additionally, they found the state of defectors tend to first organize themselves into clusters
 of all participant or all defector.
-
-
 
 ##### Citation:
 Krapivsky, P. L., and S. Redner. “Emergent Network Modularity.” [1706.01514] Emergent Network Modularity,
 20 June 2017, arxiv.org/abs/1706.01514. Accessed 18 Sept. 2017.
 
 ##### Summary:
-This paper explored a model of graph growth and it's emergent properties. The method of growth was 
+This paper explored a model of graph growth and it's emergent properties. The method of growth was
 for every new node added, it was randomly assigned to a node in the graph, and then randomly connected
 to a neighbor of that node. The paper cited several applications of this application in the past with
-directed graphs and proposed to further explore the concept in the context of undirected graphs, which 
+directed graphs and proposed to further explore the concept in the context of undirected graphs, which
 better approximate topics such as social media connections, which are often two way. However, they did
 not much go into the connection of this growth to real world systems, but rather explored some
 conterintuitive properties of the network, mostly the surprising amount of "star structures" that arise.
@@ -35,18 +34,26 @@ for star graphs with little imperfections. Additionally, the likelyhood for very
 develop with very large graphs (~E6 Nodes) is also very likely, with the graphs appearing as shallowly linked
 individual structures rather than a cohesive unit.
 
-
 ##### Citation:
-  Kallus, Zsofia, Daniel Kondor, Jozsef Steger, Istvan Csabai, Eszter Bokanyi, and Gabor Vattay. "Video Pandemics: Worldwide Viral Spreading of Psy's Gangnam Style Video." [1707.04460] Video Pandemics: Worldwide Viral Spreading of Psy's Gangnam Style Video. 14 July 2017. Web. 15 Sept. 2017.
+[Epidemic Spreading in Scale-Free Networks](https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.86.3200)
+*Pastor-Satorras, Romualdo; Vespignani, Allesandro;*  
 
-##### Summary:
-  This paper explored the spread of viral videos, specifically "Gangnam Style" on the internet. The group showed that they were
-able to construct a model that accurately portrayed the spread of viral videos by examining the number of common followers
-between different regions.
-First, they constructed a graph of 261 large administrative geographical regions in the internet, then connected the nodes
-and weighted each node based on individual level followers between regions. Next, by using both google trends
-and tweet keyword analysis was able to map the prevalence of Gangnam Style in each region over time. By approximating the
-origin of the video, they were able to model the time it took for gangnam style to reach each region based on either
-geographical distance from origin, or the graphical model distance from the origin. They were then able to indicate the
-validity of their model by showing the linear trend between time to region and distance in their model compared to the lack of
-a trend in time to region and geographical distance to region.
+##### Summary
+This paper investigates the spreading of epidemics in scale-free networks. Using a *susceptible-infected-susceptible* model in which nodes are susceptible, become infected, and recover to become susceptible again, fixed-size networks have an epidemic threshold, a rate of spreading below which the disease dies out. Vespignani and Pastor-Satorras apply this model to scale-free networks, with two important discoveries. Firstly, in scale-free networks, the epidemic eventually reaches a steady state where the proportion of infected nodes remains the same. The second discovery is that this proportion is always > 0 for any disease that has a nonzero rate of infection. They compute these findings by investigating epidemics in the Internet, using data from the spreading of computer viruses as validation.
+
+#### Replication and Extension:
+
+The main experiment we plan to replicate is the participatory greedy routing experiment in Kleineberg and Helbing. We will replicate their construction of the synthetic complex network, then simulate the greedy routing process for a long enough time for the system to reach a steady-state, and observe the outcome of the network (functioning vs. non-functioning) as a function of the payoff reward and initial proportion of defectors, as explored in the paper. For the sake of reasonable project scoping, we don't plan to investigate any of the further questions the paper explores. For an extension, we plan to introduce elements of Pastor-Satorras and Vespignani by simulating greedy routing on a scale-free network, and comparing the results to the original synthetic network; in particular, we will investigate how the hub nodes affect the outcome of the network by running the experiment and assigning nodes' probabilities of being a defector based on their degree - i.e, the hub nodes are more likely to be defectors initially than other nodes.
+
+#### Potential Graphical Output:
+
+![Graphic 1](Graphic1.png)
+A potential result of our simulation for the original synthetic network. The red area shows the failure state of the network as a function of the original proportion of defectors *C0* and the payoff *b*.
+
+![Graphic 2](Graphic2.png)
+A potential result of our simulation on a scale-free network.
+
+
+#### Interpretation of Results:
+
+The main thing we'll be interpreting in our results is the area of the failure-state of the network in the *b-C0* graph. If the area of the failure state in the scale-free network is smaller than in the synthetic network, it will indicate that the scale-free network is less likely to fail than the synthetic network, or vice versa.
