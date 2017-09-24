@@ -61,16 +61,10 @@ A potential result of our simulation for the original synthetic network. The red
 A potential result of our simulation on a scale-free network.
 
 The main thing we'll be interpreting in our results is the area of the failure-state of the network in the *b-C0* graph. If the area of the failure state in the scale-free network is smaller than in the synthetic network, it will indicate that the scale-free network is less likely to fail than the synthetic network, or vice versa.
-
 Some problems we may run into include making decisions about how to map the graph into a 2 dimensional space. The paper the
 experiment is based on uses some somewhat complex functions to determine distance, so we will need to either determine how to use those and which parts are important or make our own graph with a its compelling explanation for architecture. Additionally, it may be difficult to determine the best qualities of the graph to vary in order to yield interesting results.
 
-#### Next Steps
-1. Agree on best way to construct the positions and connections inside the graph.
-2. Write code to make the graph
-3. Write function to simulate message transmission across nodes.
-4. Write functions to update individual nodes with defection probabilities.
-5. Run the functions a bunch of times.
-
 ##### Immediate Next Steps:
 **Matt:** Read the Appendix A of the participatory greedy routing paper to figure out how to build the synthetic complex network, and start writing functions in Python to create the network.
+
+**Nick:** Look into the NX.graphs() and write a function to traverse a graph to send a message from one node to another, while updating the payoff values for the nodes along the way.
