@@ -48,11 +48,11 @@ individual structures rather than a cohesive unit.
 ##### Summary
 This paper investigates the spreading of epidemics in scale-free networks. Using a *susceptible-infected-susceptible* model in which nodes are susceptible, become infected, and recover to become susceptible again, fixed-size networks have an epidemic threshold, a rate of spreading below which the disease dies out. Vespignani and Pastor-Satorras apply this model to scale-free networks, with two important discoveries. Firstly, in scale-free networks, the epidemic eventually reaches a steady state where the proportion of infected nodes remains the same. The second discovery is that this proportion is always > 0 for any disease that has a nonzero rate of infection. They compute these findings by investigating epidemics in the Internet, using data from the spreading of computer viruses as validation.
 
-#### Replication and Extension:
+#### Experiment Design:
 
 The main experiment we plan to replicate is the participatory greedy routing experiment in Kleineberg and Helbing. We will replicate their construction of the synthetic complex network, then simulate the greedy routing process for a long enough time for the system to reach a steady-state, and observe the outcome of the network (functioning vs. non-functioning) as a function of the payoff reward and initial proportion of defectors, as explored in the paper. For the sake of reasonable project scoping, we don't plan to investigate any of the further questions the paper explores. For an extension, we plan to introduce elements of Pastor-Satorras and Vespignani by simulating greedy routing on a scale-free network, and comparing the results to the original synthetic network; in particular, we will investigate how the hub nodes affect the outcome of the network by running the experiment and assigning nodes' probabilities of being a defector based on their degree - i.e, the hub nodes are more likely to be defectors initially than other nodes.
 
-#### Potential Graphical Output:
+**The output of our experiments could look something like this:**
 
 ![Graphic 1](Graphic1.png)
 A potential result of our simulation for the original synthetic network. The red area shows the failure state of the network as a function of the original proportion of defectors *C0* and the payoff *b*.
@@ -60,12 +60,8 @@ A potential result of our simulation for the original synthetic network. The red
 ![Graphic 2](Graphic2.png)
 A potential result of our simulation on a scale-free network.
 
-
-#### Interpretation of Results:
-
 The main thing we'll be interpreting in our results is the area of the failure-state of the network in the *b-C0* graph. If the area of the failure state in the scale-free network is smaller than in the synthetic network, it will indicate that the scale-free network is less likely to fail than the synthetic network, or vice versa.
 
-#### Causes for Concern:
 Some problems we may run into include making decisions about how to map the graph into a 2 dimensional space. The paper the
 experiment is based on uses some somewhat complex functions to determine distance, so we will need to either determine how to use those and which parts are important or make our own graph with a its compelling explanation for architecture. Additionally, it may be difficult to determine the best qualities of the graph to vary in order to yield interesting results.
 
