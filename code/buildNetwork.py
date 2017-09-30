@@ -55,25 +55,35 @@ def connect_nodes(G, mean_deg, temp):
             G.add_edge(*edge)
 
 
-def set_r_vals(G, gamma, mean_deg, temp):
+def set_r_vals(G, gamma, mean_deg, temp, BA=False):
     k_vals = nx.get_node_attributes(G, 'k')
     c = mean_deg*(sin(temp*pi)/2*temp)*(((gamma-2)/(gamma-1))**2)
     R = 2*log(len(G.nodes())/c)
     k_min = get_k_min(mean_deg, gamma)
-    r_vals = [R-2*log(k_vals[node]/k_min) for node in G.nodes()]
+    if BA:  # If we're using a BA graph, the r value is simply based on the degree of the node
+        max_deg = max(degrees(G))
+        r_vals = [max_deg - G.degree(node) for node in G.nodes()]
+    else:  # Otherwise, use the standard formula for computing r values
+        r_vals = [R-2*log(k_vals[node]/k_min) for node in G.nodes()]
     r_dict = dict(zip(G.nodes(), r_vals))
     nx.set_node_attributes(G, 'r', r_dict)
     return r_dict
 
+
 """
 Assigns the theta, r, k, and position values of the graph.
 """
-def assign_network_attributes(G, C, gamma, mean_deg, temp):
+def assign_network_attributes(G, C, gamma, mean_deg, temp, BA=False):
     all_nodes = G.nodes()
     n = len(all_nodes)
     thetas = [random.uniform(0, 2*pi) for _ in range(n)]  # Map every node to a theta from a uniform distribution
     k_vals = [get_k_dist(mean_deg, gamma) for _ in range(n)]  # Assign each node a k randomly
-    defector_list = [random.uniform(0, 1) < C for _ in range(n)]
+    if BA:  # If we're using a BA graph, distribute defectors according to their degree
+        max_deg = max(degrees(G))
+        defector_list = [random.uniform(0, max_deg) < G.degree(node)*C for node in all_nodes]
+    else:
+        defector_list = [random.uniform(0, 1) < C for _ in range(n)]
+
 
     thetas_dict = dict(zip(all_nodes, thetas))
     k_dict = dict(zip(all_nodes, k_vals))
@@ -83,7 +93,7 @@ def assign_network_attributes(G, C, gamma, mean_deg, temp):
     nx.set_node_attributes(G, 'k', k_dict)
     nx.set_node_attributes(G, 'defector', defect_dict)
 
-    r_vals = set_r_vals(G, gamma, mean_deg, temp)
+    r_vals = set_r_vals(G, gamma, mean_deg, temp, BA=BA)
 
     pos_vals = [(r_vals[node]*cos(thetas_dict[node]), r_vals[node]*sin(thetas_dict[node])) for node in all_nodes]
     pos_dict = dict(zip(all_nodes, pos_vals))
@@ -100,6 +110,12 @@ def build_synthetic_network(n, C, gamma, mean_deg, temp):
     return G
 
 
+def build_ba_network(n, C, gamma, mean_deg, temp, num_connect=1):
+    G = nx.barabasi_albert_graph(n, num_connect)
+    assign_network_attributes(G, C, gamma, mean_deg, temp, BA=True)
+    return G
+
+
 def degrees(G):
     """List of degrees for nodes in `G`.
 
@@ -111,12 +127,15 @@ def degrees(G):
 
 
 def draw_net(graph, **kwargs):
-    nx.draw(graph, nx.get_node_attributes(graph, 'pos'), **kwargs)
+    defect_dict = nx.get_node_attributes(graph, 'defector')
+    print(defect_dict)
+    defect_list = [int(defect_dict[node]) for node in graph.nodes()]
+    nx.draw(graph, nx.get_node_attributes(graph, 'pos'), cmap=plt.get_cmap('bwr'), node_color=defect_list, **kwargs)
 
 
 if __name__ == '__main__':
-    net = build_synthetic_network(250, 0.2, 2.5, 20, 0.4)
+    # net = build_synthetic_network(250, 0.1, 2.5, 20, 0.4)
+    net = build_ba_network(100, 0.2, 2.5, 20, 0.4, num_connect=15)
     # print(np.mean(degrees(net)))
-    # print(nx.get_node_attributes(net, 'r'))
-    draw_net(net, node_size=20, node_color='orange', width=0.1)
+    draw_net(net, node_size=40, width=0.1)
     plt.show()
