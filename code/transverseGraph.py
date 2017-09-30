@@ -1,10 +1,13 @@
 import random
 import networkx as nx
 import math
-from buildNetwork import build_network
+from buildNetwork import build_synthetic_network
 
+
+attributes = ['pos','weight','defector','theta','k']
 class graphCrawler:
-    def __init__(self,G,b,posDict,weightDict = None,defectorDict = None):
+
+    def __init__(self,G,b,posDict=None,weightDict = None,defectorDict = None):
         self.G = G #the graph
         self.b = b #the payoff
         self.k = 1 #a randomness factor
@@ -16,39 +19,40 @@ class graphCrawler:
         if defectorDict is None:
             self.defectorDict = dict.fromkeys(G.nodes(),0)
         # print(self.weightDict)
-        for i in G.nodes():
-            self.G[i]['weight'] = self.weightDict[i] #put all values inside the graph
-            self.G[i]['defector'] = self.defectorDict[i]
-            self.G[i]['pos'] = self.posDict[i]
+        nx.set_node_attributes(self.G, 'weight',self.weightDict)
+        nx.set_node_attributes(self.G, 'defector',self.defectorDict)
+
 
     def findDistance(self,node, target):#simple function to find disance between nodes
-        posN = self.G[node]['pos']#//TODO
-        posT = self.G[target]['pos']
+        posDict = nx.get_node_attributes(self.G, 'pos')
+        posN = posDict[node]#//TODO
+        posT = posDict[target]
         return math.sqrt((posN[0]-posT[0])**2 + (posN[1]-posT[1])**2)
 
     def findClosestNode(self, node, target):
         allNeighbors = self.G.neighbors(node)#get all neighbors of the node
         allNeighbors = allNeighbors.copy()
-        # print(allNeighbors)
-        closeNode = allNeighbors.popitem()[0]#get last value and set to closest
-        while closeNode in ['pos','weight','defector']:
-            closeNode = allNeighbors.popitem()[0]
+        print(allNeighbors)
+        if not (allNeighbors):
+            return node
+
+        closeNode = allNeighbors.pop()#get last value and set to closest
+        print(closeNode)
         minDist = self.findDistance(closeNode,target)#set last value distance to min
-        for i,v in allNeighbors.items():#loop to check distance of all neighbors
-            if i not in ['pos','weight','defector']:
-                dist = self.findDistance(i,target)
-                if dist < minDist:
-                    misDist = dist
-                    closeNode = i
+        for i in allNeighbors:#loop to check distance of all neighbors
+            dist = self.findDistance(i,target)
+            if dist < minDist:
+                misDist = dist
+                closeNode = i
         return closeNode#return closest
 
     def getPath(self, node, target, seen=set()):#get closest each time
-        if self.G[node]['defector'] == 1 or node in seen:
+        defectDict = nx.get_node_attributes(self.G, 'defector')
+        if defectDict[node] == 1 or node in seen:
             return [node]
         nextnode = self.findClosestNode(node, target)
         if nextnode == target:
             return [node] + [nextnode]
-        print(node)
         seen.add(node)
         return [node] + self.getPath(nextnode, target, seen=seen)
 
@@ -56,26 +60,42 @@ class graphCrawler:
     def updateWeights(self,nodeList,delieveredBool):
         lastNode = nodeList[-1]
         reverseList = nodeList[::-1]
-        for i,l in enumerate(reverseList):
-            self.G[i]['weight'] = self.G[i]['weight']+ delieveredBool*(self.b/len(reverseList)) - 1
+        weightDict = nx.get_node_attributes(self.G, 'weight')
+        for l,i in enumerate(reverseList):
+            weightDict[i] = weightDict[i]+ delieveredBool*(self.b/len(reverseList)) - 1
 
     def updateConversion(self):
-        for node in G.nodes():
-            allNeighbors = self.G[node]#get all neighbors of the node
-            closeNode = random.choice(allNeighbors.keys())#random node
-            probabilityChange = 1 / (1 + math.exp((self.G[node]['weight']-self.G[closenode]['weight'])/self.k))
+        weightDict = nx.get_node_attributes(self.G, 'weight')
+        defectorDict = nx.get_node_attributes(self.G, 'defector')
+
+        for node in self.G.nodes():
+
+            allNeighbors = self.G.neighbors(node)#get all neighbors of the node
+            allNeighbors = allNeighbors.copy()
+            # print(allNeighbors)
+            closeNode =random.choice(allNeighbors)#get last value and set to closest
+            print(node)
+            print(closeNode)
+            weightj = weightDict[closeNode]
+            weighti = weightDict[node]
+            # print(weighti)
+            # print(weightj)
+            expVal = math.exp((weighti-weightj)/self.k)
+            print(expVal)
+            probabilityChange = 1 / (1 + expVal)
                                      #calculate proability that the original node will copy its neighbor
             changeBool = random.random() < probabilityChange#make decision based on probability
             if changeBool:
-                self.defectorDict[node] = self.G[closenode]['defector']#store difference in defectorness in another array
-        for node in G.nodes():#update and reset weights
-            self.G[i]['weight'] = self.weightDict[i]
-            self.G[i]['defector'] = self.defectorDict[i]
+                self.defectorDict[node] = defectorDict[closeNode]#store difference in defectorness in another array
+        for node in self.G.nodes():#update and reset weights
+            weightDict[node] = self.weightDict[node]
+            defectorDict[node] = self.defectorDict[node]
 
     def iterate(self, numTimes):
         for i in range(numTimes):
             for i in range(nx.number_of_nodes(self.G)):
-                nodeList = random.sample(G.nodes(), 2)
+                print('PATH-------')
+                nodeList = random.sample(self.G.nodes(), 2)
                 node1 = nodeList[0]
                 node2 = nodeList[1]
                 path = self.getPath(node1,node2)
@@ -83,18 +103,28 @@ class graphCrawler:
                     self.updateWeights(path,1)
                 else:
                     self.updateWeights(path,0)
+            print('UPDATING-------')
             self.updateConversion()
 
-n = 100
-k = 10
-C = .6
-G = nx.generators.random_graphs.powerlaw_cluster_graph(n, k, C, seed=None)
-posDict = {}
-for i in G.nodes():
-    posDict[i] = (random.randint(0,100),random.randint(0,100))
-# print(posDict)
-myCrawler = graphCrawler(G,10,posDict)
-myCrawler.iterate(10)
+if __name__ == '__main__':
+    n = 500
+    gamma = 2.5
+    temp = 0.4
+    meanDeg = 30
+    c = .2
+    graph = build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    myCrawler = graphCrawler(graph,5)
+    myCrawler.iterate(10)
+# n = 100
+# k = 10
+# C = .6
+# G = nx.generators.random_graphs.powerlaw_cluster_graph(n, k, C, seed=None)
+# posDict = {}
+# for i in G.nodes():
+#     posDict[i] = (random.randint(0,100),random.randint(0,100))
+# # print(posDict)
+# myCrawler = graphCrawler(G,10,posDict)
+# myCrawler.iterate(10)
 # pos = dict(Albany=(-74, 43),
 #           Boston=(-71, 42),
 #           NYC=(-74, 41),
