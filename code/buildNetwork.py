@@ -129,13 +129,13 @@ def degrees(G):
 def draw_net(graph, **kwargs):
     defect_dict = nx.get_node_attributes(graph, 'defector')
     print(defect_dict)
-    defect_list = [int(defect_dict[node]) for node in graph.nodes()]
-    nx.draw(graph, nx.get_node_attributes(graph, 'pos'), cmap=plt.get_cmap('bwr'), node_color=defect_list, **kwargs)
+    colors = {True: 'orange', False: 'b'}
+    defect_list = [colors[defect_dict[node]] for node in graph.nodes()]
+    nx.draw(graph, nx.get_node_attributes(graph, 'pos'), node_color=defect_list, node_size=20, width=0.1, **kwargs)
 
 
 if __name__ == '__main__':
     # net = build_synthetic_network(250, 0.1, 2.5, 20, 0.4)
     net = build_ba_network(100, 0.2, 2.5, 20, 0.4, num_connect=15)
     # print(np.mean(degrees(net)))
-    draw_net(net, node_size=40, width=0.1)
-    plt.show()
+    draw_net(net)
