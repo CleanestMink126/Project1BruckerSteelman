@@ -132,6 +132,7 @@ def draw_net(graph, **kwargs):
     colors = {True: 'orange', False: 'b'}
     defect_list = [colors[defect_dict[node]] for node in graph.nodes()]
     nx.draw(graph, nx.get_node_attributes(graph, 'pos'), node_color=defect_list, node_size=20, width=0.1, **kwargs)
+    plt.show()
 
 
 if __name__ == '__main__':
