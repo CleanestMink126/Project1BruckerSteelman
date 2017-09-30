@@ -3,7 +3,7 @@ import networkx as nx
 import math
 
 class graphCrawler:
-    def __init__(self,G,b,posDict,weightDict = None,defectorDict = None):
+    def __init__(self,G,b,posDict=None,weightDict = None,defectorDict = None):
         self.G = G #the graph
         self.b = b #the payoff
         self.k = 1 #a randomness factor
@@ -18,7 +18,8 @@ class graphCrawler:
         for i in G.nodes():
             self.G[i]['weight'] = self.weightDict[i] #put all values inside the graph
             self.G[i]['defector'] = self.defectorDict[i]
-            self.G[i]['pos'] = self.posDict[i]
+            if posDict is not None:
+                self.G[i]['pos'] = self.posDict[i]
 
     def findDistance(self,node, target):#simple function to find disance between nodes
         posN = self.G[node]['pos']#//TODO
