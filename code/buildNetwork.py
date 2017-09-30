@@ -98,8 +98,8 @@ def draw_net(graph, **kwargs):
     print(kwargs)
     nx.draw(graph, nx.get_node_attributes(graph, 'pos'), **kwargs)
 
-
-net = build_network(1000, 2.5, 3, 0.4)
-# print(nx.get_node_attributes(net, 'r'))
-draw_net(net, node_size=20, node_color='orange', width=0.1)
-plt.show()
+if __name__ == '__main__':
+    net = build_network(1000, 2.5, 3, 0.4)
+    # print(nx.get_node_attributes(net, 'r'))
+    draw_net(net, node_size=20, node_color='orange', width=0.1)
+    plt.show()
