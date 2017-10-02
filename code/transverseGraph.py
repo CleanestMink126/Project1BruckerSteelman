@@ -1,7 +1,10 @@
 import random
 import networkx as nx
 import math
-from buildNetwork import build_synthetic_network
+import numpy as np
+from buildNetwork import build_synthetic_network, draw_net
+import matplotlib.pyplot as plt
+
 
 
 attributes = ['pos','weight','defector','theta','k']
@@ -20,7 +23,7 @@ class graphCrawler:
             self.defectorDict = dict.fromkeys(G.nodes(),0)
         # print(self.weightDict)
         nx.set_node_attributes(self.G, 'weight',self.weightDict)
-        nx.set_node_attributes(self.G, 'defector',self.defectorDict)
+        # nx.set_node_attributes(self.G, 'defector',self.defectorDict)
 
 
     def findDistance(self,node, target):#simple function to find disance between nodes
@@ -91,6 +94,8 @@ class graphCrawler:
             weightDict[node] = self.weightDict[node]
             defectorDict[node] = self.defectorDict[node]
 
+
+
     def iterate(self, numTimes):
         for i in range(numTimes):
             for i in range(nx.number_of_nodes(self.G)):
@@ -106,15 +111,41 @@ class graphCrawler:
             print('UPDATING-------')
             self.updateConversion()
 
+    def get_defector_state(self):
+        defectors = nx.get_node_attributes(self.G, 'defector')
+        d_list = list(defectors.values())
+        return sum(d_list)/len(d_list)
+
+
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=30, d=10):
+    out_vals = np.zeros((d,d))
+    C0_vals = np.linspace(0.2,0.8,d)
+    b_vals = np.linspace(5,25,d)
+    for i, C0 in enumerate(C0_vals):
+        for j, b in enumerate(b_vals):
+            graph = build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
+            myCrawler = graphCrawler(graph, b)
+            myCrawler.iterate(100)
+            out_vals[i,j] = myCrawler.get_defector_state() # Record the output state of the system
+    plt.imshow(out_vals,cmap='hot')
+    plt.show()
+
+
 if __name__ == '__main__':
-    n = 500
-    gamma = 2.5
-    temp = 0.4
-    meanDeg = 30
-    c = .2
-    graph = build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    myCrawler = graphCrawler(graph,5)
-    myCrawler.iterate(10)
+    # n = 500
+    # gamma = 2.5
+    # temp = 0.4
+    # meanDeg = 30
+    # c = .8
+    # graph = build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    # myCrawler = graphCrawler(graph, 5)
+    # draw_net(myCrawler.G)
+    # myCrawler.iterate(10)
+    # print('Defector state', myCrawler.get_defector_state())
+    # draw_net(myCrawler.G)
+
+    make_punchline()
+
 # n = 100
 # k = 10
 # C = .6
