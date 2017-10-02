@@ -66,7 +66,7 @@ def set_r_vals(G, gamma, mean_deg, temp, BA=False):
     else:  # Otherwise, use the standard formula for computing r values
         r_vals = [R-2*log(k_vals[node]/k_min) for node in G.nodes()]
     r_dict = dict(zip(G.nodes(), r_vals))
-    nx.set_node_attributes(G, 'r', r_dict)
+    nx.set_node_attributes(G, name = 'r', values = r_dict)
     return r_dict
 
 
@@ -89,16 +89,16 @@ def assign_network_attributes(G, C, gamma, mean_deg, temp, BA=False):
     k_dict = dict(zip(all_nodes, k_vals))
     defect_dict = dict(zip(all_nodes, defector_list))
     # Assign node attributes
-    nx.set_node_attributes(G, 'theta', thetas_dict)
-    nx.set_node_attributes(G, 'k', k_dict)
-    nx.set_node_attributes(G, 'defector', defect_dict)
+    nx.set_node_attributes(G, name ='theta', values= thetas_dict)
+    nx.set_node_attributes(G, name ='k', values=k_dict)
+    nx.set_node_attributes(G, name ='defector', values= defect_dict)
 
     r_vals = set_r_vals(G, gamma, mean_deg, temp, BA=BA)
 
     pos_vals = [(r_vals[node]*cos(thetas_dict[node]), r_vals[node]*sin(thetas_dict[node])) for node in all_nodes]
     pos_dict = dict(zip(all_nodes, pos_vals))
 
-    nx.set_node_attributes(G, 'pos', pos_dict)
+    nx.set_node_attributes(G, name ='pos', values=pos_dict)
 
 
 # Builds a synthetic network based on the network building algorithm defined in the paper.

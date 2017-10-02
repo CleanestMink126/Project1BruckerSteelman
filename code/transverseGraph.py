@@ -2,7 +2,7 @@ import random
 import networkx as nx
 import math
 import numpy as np
-from buildNetwork import build_synthetic_network, draw_net
+import buildNetwork
 import matplotlib.pyplot as plt
 
 
@@ -22,25 +22,25 @@ class graphCrawler:
         if defectorDict is None:
             self.defectorDict = dict.fromkeys(G.nodes(),0)
         # print(self.weightDict)
-        nx.set_node_attributes(self.G, 'weight',self.weightDict)
+        nx.set_node_attributes(self.G, name ='weight',values = self.weightDict)
         # nx.set_node_attributes(self.G, 'defector',self.defectorDict)
 
 
     def findDistance(self,node, target):#simple function to find disance between nodes
         posDict = nx.get_node_attributes(self.G, 'pos')
-        posN = posDict[node]#//TODO
+        posN = posDict[node]
         posT = posDict[target]
         return math.sqrt((posN[0]-posT[0])**2 + (posN[1]-posT[1])**2)
 
     def findClosestNode(self, node, target):
-        allNeighbors = self.G.neighbors(node)#get all neighbors of the node
+        allNeighbors = list(self.G[node].keys())#get all neighbors of the node
         allNeighbors = allNeighbors.copy()
-        print(allNeighbors)
+        # print(allNeighbors)
         if not (allNeighbors):
             return node
 
         closeNode = allNeighbors.pop()#get last value and set to closest
-        print(closeNode)
+        # print(closeNode)
         minDist = self.findDistance(closeNode,target)#set last value distance to min
         for i in allNeighbors:#loop to check distance of all neighbors
             dist = self.findDistance(i,target)
@@ -49,7 +49,9 @@ class graphCrawler:
                 closeNode = i
         return closeNode#return closest
 
-    def getPath(self, node, target, seen=set()):#get closest each time
+    def getPath(self, node, target, seen=None):#get closest each time
+        if seen is None:
+            seen = set()
         defectDict = nx.get_node_attributes(self.G, 'defector')
         if defectDict[node] == 1 or node in seen:
             return [node]
@@ -66,6 +68,7 @@ class graphCrawler:
         weightDict = nx.get_node_attributes(self.G, 'weight')
         for l,i in enumerate(reverseList):
             weightDict[i] = weightDict[i]+ delieveredBool*(self.b/len(reverseList)) - 1
+        nx.set_node_attributes(self.G, name = 'weight',values=weightDict)
 
     def updateConversion(self):
         weightDict = nx.get_node_attributes(self.G, 'weight')
@@ -73,37 +76,41 @@ class graphCrawler:
 
         for node in self.G.nodes():
 
-            allNeighbors = self.G.neighbors(node)#get all neighbors of the node
+            allNeighbors = list(self.G[node].keys())#get all neighbors of the node
             allNeighbors = allNeighbors.copy()
             # print(allNeighbors)
             closeNode =random.choice(allNeighbors)#get last value and set to closest
-            print(node)
-            print(closeNode)
+            # print(node)
+            # print(closeNode)
             weightj = weightDict[closeNode]
             weighti = weightDict[node]
             # print(weighti)
             # print(weightj)
-            expVal = math.exp((weighti-weightj)/self.k)
-            print(expVal)
-            probabilityChange = 1 / (1 + expVal)
-                                     #calculate proability that the original node will copy its neighbor
-            changeBool = random.random() < probabilityChange#make decision based on probability
-            if changeBool:
-                self.defectorDict[node] = defectorDict[closeNode]#store difference in defectorness in another array
-        for node in self.G.nodes():#update and reset weights
-            weightDict[node] = self.weightDict[node]
-            defectorDict[node] = self.defectorDict[node]
+            try:
+                expVal = math.exp((weighti-weightj)/self.k)
+                # print(expVal)
+                probabilityChange = 1 / (1 + expVal)
+                                         #calculate proability that the original node will copy its neighbor
+                changeBool = random.random() < probabilityChange#make decision based on probability
+                if changeBool:
+                    defectorDict[node] = defectorDict[closeNode]#store difference in defectorness in another array
+            except:
+                continue
+
+        nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
+        nx.set_node_attributes(self.G, name ='defector',values = defectorDict)
 
 
 
     def iterate(self, numTimes):
         for i in range(numTimes):
             for i in range(nx.number_of_nodes(self.G)):
-                print('PATH-------')
+                # print('PATH-------')
                 nodeList = random.sample(self.G.nodes(), 2)
                 node1 = nodeList[0]
                 node2 = nodeList[1]
                 path = self.getPath(node1,node2)
+                # print(path)
                 if path[-1] == node2:
                     self.updateWeights(path,1)
                 else:
@@ -123,26 +130,26 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=30, d=10):
     b_vals = np.linspace(5,25,d)
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
-            graph = build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
+            graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
             myCrawler = graphCrawler(graph, b)
-            myCrawler.iterate(100)
+            myCrawler.iterate(10)
             out_vals[i,j] = myCrawler.get_defector_state() # Record the output state of the system
     plt.imshow(out_vals,cmap='hot')
     plt.show()
 
 
 if __name__ == '__main__':
-    # n = 500
+    # n = 100
     # gamma = 2.5
     # temp = 0.4
-    # meanDeg = 30
-    # c = .8
-    # graph = build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    # myCrawler = graphCrawler(graph, 5)
-    # draw_net(myCrawler.G)
-    # myCrawler.iterate(10)
+    # meanDeg = 15
+    # c = .5
+    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    # myCrawler = graphCrawler(graph, 10)
+    # buildNetwork.draw_net(myCrawler.G)
+    # myCrawler.iterate(100)
     # print('Defector state', myCrawler.get_defector_state())
-    # draw_net(myCrawler.G)
+    # buildNetwork.draw_net(myCrawler.G)
 
     make_punchline()
 
