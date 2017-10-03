@@ -48,7 +48,7 @@ class graphCrawler:
         posN = self.posDict[node]
         posT = self.posDict[target]
 
-        return math.sqrt((posT[0]-posN[0])**2 + (posT[1]-posN[1])**2)
+        return dist
 
     def findClosestNode(self, node, target):
         allNeighbors = list(self.G[node].keys())#get all neighbors of the node
@@ -72,7 +72,7 @@ class graphCrawler:
     def getPath(self, node, target, seen=None):#get closest each time
         if seen is None:
             seen = set()
-        print(self.findDistance(node,target))
+        # print(self.findDistance(node,target))
         if self.defectorDict[node] == 1 or node in seen:
             return [node]
         nextnode = self.findClosestNode(node, target)
@@ -135,14 +135,14 @@ class graphCrawler:
                 node1 = nodeList[0]
                 node2 = nodeList[1]
                 path = self.getPath(node1,node2)
-                print(node1)
-                print(node2)
-                print(path)
+                # print(node1)
+                # print(node2)
+                # print(path)
                 if path[-1] == node2:
-                    print('Success!')
+                    # print('Success!')
                     self.updateWeights(path,1)
                 else:
-                    print('FAIl!')
+                    # print('FAIl!')
                     self.updateWeights(path,0)
             # print('UPDATING-------')
             self.updateConversion()
@@ -153,17 +153,17 @@ class graphCrawler:
         return sum(d_list)/len(d_list)
 
 
-def make_punchline(n=1000, gamma=2.5, temp=0.4, mean_deg=100, d=5,avg = 10):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 10):
     now = time.time()
     out_vals = np.zeros((d,d))
-    C0_vals = np.linspace(0,0.8,d)
+    C0_vals = np.linspace(0.2,0.8,d)
     '''I did a hacky fix here, the paper specified C as
     the rate of good boyos but we defined it as defectors so I just do 1 - C'''
     b_vals = np.linspace(5,25,d)
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
-            graph = buildNetwork.build_ba_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
-            buildNetwork.draw_net(graph)
+            graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
+            # buildNetwork.draw_net(graph)
             myCrawler = graphCrawler(graph, b)
             myCrawler.iterate(10)
             states = np.zeros(avg)
@@ -182,7 +182,7 @@ def make_punchline(n=1000, gamma=2.5, temp=0.4, mean_deg=100, d=5,avg = 10):
     print('MULT' + str(mult))
     print(out_vals)
     fig, ax = plt.subplots()
-    heatmap = ax.pcolor(out_vals, cmap=plt.cm.YlOrRd, alpha=0.8)
+    heatmap = ax.pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
     ax.set_xticklabels(b_vals, minor=False)
     ax.set_yticklabels(C0_vals, minor=False)
     plt.show()
