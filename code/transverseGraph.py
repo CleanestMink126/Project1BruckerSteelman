@@ -19,8 +19,9 @@ class graphCrawler:
         self.defectorDict = defectorDict #initialized defection
         self.thetas_dict = nx.get_node_attributes(G, name ='theta')
         self.r_dict = nx.get_node_attributes(G, name ='r')
+        self.bottomVal = 150
         if weightDict is None:
-            self.weightDict = dict.fromkeys(G.nodes(),0)
+            self.weightDict = dict.fromkeys(G.nodes(),5)
         if defectorDict is None:
             self.defectorDict = nx.get_node_attributes(self.G, name ='defector')
         if posDict is None:
@@ -95,23 +96,19 @@ class graphCrawler:
         defectorDict = nx.get_node_attributes(self.G, 'defector')
 
         for node in self.G.nodes():
-
-            allNeighbors = list(self.G[node].keys())#get all neighbors of the node
-            if allNeighbors:
-                otherNode =random.choice(allNeighbors)#get last value and set to closest
-                weightj = weightDict[otherNode]
+            if defectorDict[node] == 0:
                 weighti = weightDict[node]
                 try:
-                    expVal = math.exp((weighti-weightj)/self.k)#find e value
-                    # print(expVal)
-                    probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
-                    changeBool = random.random() < probabilityChange#make decision based on probability
-                    if changeBool:
-                        self.defectorDict[node] = defectorDict[otherNode]#store difference in defectorness in another dict
+                    # expVal = math.exp((weighti)/self.k)#find e value
+                    # # print(expVal)
+                    # probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
+                    # changeBool = random.random() < probabilityChange#make decision based on probability
+                    if weighti<self.bottomVal:
+                        self.defectorDict[node] = 1#store difference in defectorness in another dict
                 except:
                     continue
 
-        nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
+        # nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
         nx.set_node_attributes(self.G, name ='defector',values = self.defectorDict)
 
 
