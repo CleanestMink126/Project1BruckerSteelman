@@ -19,7 +19,7 @@ class graphCrawler:
         self.defectorDict = defectorDict #initialized defection
         self.thetas_dict = nx.get_node_attributes(G, name ='theta')
         self.r_dict = nx.get_node_attributes(G, name ='r')
-        self.bottomVal = 150
+        self.bottomVal = -150
         if weightDict is None:
             self.weightDict = dict.fromkeys(G.nodes(),5)
         if defectorDict is None:
@@ -123,7 +123,7 @@ class graphCrawler:
                 node2 = nodeList[1]
                 path = self.getPath(node1,node2)
                 seen_nodes = [True if node in path else False for node in self.G.nodes()]
-                nx.set_node_attributes(self.G, 'path', dict(zip(self.G.nodes(),seen_nodes)))
+                nx.set_node_attributes(self.G, name='path', values = dict(zip(self.G.nodes(),seen_nodes)))
 
                 # buildNetwork.draw_net(self.G, path=True)
                 # print(node1)
@@ -183,17 +183,18 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 10):
 
 
 if __name__ == '__main__':
-    n = 1000
+    n = 200
     gamma = 2.5
     temp = 0.4
     meanDeg = 10
-    c = .2
+    c = .5
     graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    myCrawler = graphCrawler(graph, 10)
+    myCrawler = graphCrawler(graph, 30)
     buildNetwork.draw_net(myCrawler.G)
-    res = myCrawler.iterate(50)
-    print('Defector state', myCrawler.get_defector_state())
-    buildNetwork.draw_net(myCrawler.G)
+    for i in range(50):
+        res = myCrawler.iterate(50)
+        print('Defector state', myCrawler.get_defector_state())
+        buildNetwork.draw_net(myCrawler.G)
     res2 = myCrawler.iterate(10)
     print(sum(res2)/len(res2))
 
