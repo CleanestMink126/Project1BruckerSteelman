@@ -111,6 +111,7 @@ def build_synthetic_network(n, C, gamma, mean_deg, temp):
     G.add_nodes_from(range(n))
     assign_network_attributes(G, C, gamma, mean_deg, temp)
     connect_nodes(G, mean_deg, temp)
+    print(np.mean(degrees(G)))
     return G
 
 
@@ -130,17 +131,22 @@ def degrees(G):
     return [G.degree(u) for u in G]
 
 
-def draw_net(graph, **kwargs):
+def draw_net(graph, path=False, **kwargs):
     defect_dict = nx.get_node_attributes(graph, 'defector')
-    print(defect_dict)
-    colors = {True: 'orange', False: 'b'}
+    # print(defect_dict)
+    colors = {True: 'r', False: 'b'}
     defect_list = [colors[defect_dict[node]] for node in graph.nodes()]
-    nx.draw(graph, nx.get_node_attributes(graph, 'pos'), node_color=defect_list, node_size=20, width=0.1, **kwargs)
+
+    if path:
+        path_dict = nx.get_node_attributes(graph, 'path')
+        path_list = [colors[path_dict[node]] for node in graph.nodes()]
+        nx.draw(graph, nx.get_node_attributes(graph, 'pos'), node_color=path_list, node_size=20, width=0.1, **kwargs)
+    else:
+        nx.draw(graph, nx.get_node_attributes(graph, 'pos'), node_color=defect_list, node_size=20, width=0.1, **kwargs)
     plt.show()
 
 
 if __name__ == '__main__':
-    # net = build_synthetic_network(250, 0.1, 2.5, 20, 0.4)
-    net = build_ba_network(100, 0.2, 2.5, 20, 0.4, num_connect=15)
-    # print(np.mean(degrees(net)))
+    net = build_synthetic_network(250, 0.1, 2.5, 20, 0.4)
+    # net = build_ba_network(100, 0.2, 2.5, 20, 0.4, num_connect=15)
     draw_net(net)

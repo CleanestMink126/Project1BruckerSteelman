@@ -75,7 +75,7 @@ class graphCrawler:
             seen = set()
         # print(self.findDistance(node,target))
         if self.defectorDict[node] == 1 or node in seen:#if we reach a defector or enter into a loop
-            return [node]#return
+            return [node] #return
         nextnode = self.findClosestNode(node, target)
         if nextnode == target:#if we reach the end, return the end
             return [node] + [nextnode]
@@ -114,6 +114,7 @@ class graphCrawler:
 
 
     def iterate(self, numTimes):
+        results = []
         allNodes = self.G.nodes()#get all the nodes
         for i in range(numTimes):#number of iterations and updates to execute
             for i in range(nx.number_of_nodes(self.G)):
@@ -121,17 +122,24 @@ class graphCrawler:
                 node1 = nodeList[0]
                 node2 = nodeList[1]
                 path = self.getPath(node1,node2)
+                seen_nodes = [True if node in path else False for node in self.G.nodes()]
+                nx.set_node_attributes(self.G, 'path', dict(zip(self.G.nodes(),seen_nodes)))
+
+                # buildNetwork.draw_net(self.G, path=True)
                 # print(node1)
                 # print(node2)
                 # print(path)
                 if path[-1] == node2:#if the last node is the target node
                     # print('Success!')
                     self.updateWeights(path,1)
+                    results.extend([1])
                 else:
                     # print('FAIl!')
                     self.updateWeights(path,0)
+                    results.extend([0])
             # print('UPDATING-------')
             self.updateConversion()
+        return results
 
     def get_defector_state(self):
         defectors = nx.get_node_attributes(self.G, 'defector')
@@ -175,16 +183,54 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 10):
 
 
 if __name__ == '__main__':
-    # n = 100
-    # gamma = 2.5
-    # temp = 0.4
-    # meanDeg = 15
-    # c = .5
-    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    # myCrawler = graphCrawler(graph, 10)
-    # buildNetwork.draw_net(myCrawler.G)
-    # myCrawler.iterate(100)
-    # print('Defector state', myCrawler.get_defector_state())
-    # buildNetwork.draw_net(myCrawler.G)
+    n = 1000
+    gamma = 2.5
+    temp = 0.4
+    meanDeg = 10
+    c = .2
+    graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    myCrawler = graphCrawler(graph, 10)
+    buildNetwork.draw_net(myCrawler.G)
+    res = myCrawler.iterate(50)
+    print('Defector state', myCrawler.get_defector_state())
+    buildNetwork.draw_net(myCrawler.G)
+    res2 = myCrawler.iterate(10)
+    print(sum(res2)/len(res2))
 
-    make_punchline()
+    # make_punchline()
+
+# n = 100
+# k = 10
+# C = .6
+# G = nx.generators.random_graphs.powerlaw_cluster_graph(n, k, C, seed=None)
+# posDict = {}
+# for i in G.nodes():
+#     posDict[i] = (random.randint(0,100),random.randint(0,100))
+# # print(posDict)
+# myCrawler = graphCrawler(G,10,posDict)
+# myCrawler.iterate(10)
+# pos = dict(Albany=(-74, 43),
+#           Boston=(-71, 42),
+#           NYC=(-74, 41),
+#           Philly=(-75, 40))
+# pos['Albany']
+# G = nx.Graph()
+# G.add_nodes_from(pos)
+# G.nodes()
+# drive_times = {('Albany', 'Boston'): 3,
+#                ('Albany', 'NYC'): 4,
+#                ('Boston', 'NYC'): 4,
+#                ('NYC', 'Philly'): 2}
+# G.add_edges_from(drive_times)
+# G.edges()
+# print(findClosestNode(G,'Albany','Philly',pos))
+# print(getPath(G,'Albany','Philly',pos))
+# nx.draw(G, pos,
+#         node_color=COLORS[1],
+#         node_shape='s',
+#         node_size=2500,
+#         with_labels=True)
+#
+# nx.draw_networkx_edge_labels(G, pos,
+#                              edge_labels=drive_times)
+#
