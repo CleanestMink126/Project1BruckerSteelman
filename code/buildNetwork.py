@@ -88,12 +88,16 @@ def assign_network_attributes(G, C, gamma, mean_deg, temp, BA=False):
     thetas_dict = dict(zip(all_nodes, thetas))
     k_dict = dict(zip(all_nodes, k_vals))
     defect_dict = dict(zip(all_nodes, defector_list))
+
     # Assign node attributes
     nx.set_node_attributes(G, name ='theta', values= thetas_dict)
     nx.set_node_attributes(G, name ='k', values=k_dict)
     nx.set_node_attributes(G, name ='defector', values= defect_dict)
 
+
     r_vals = set_r_vals(G, gamma, mean_deg, temp, BA=BA)
+    nx.set_node_attributes(G, name ='r', values=r_vals)
+
 
     pos_vals = [(r_vals[node]*cos(thetas_dict[node]), r_vals[node]*sin(thetas_dict[node])) for node in all_nodes]
     pos_dict = dict(zip(all_nodes, pos_vals))
