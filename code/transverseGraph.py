@@ -72,9 +72,11 @@ class graphCrawler:
     def getPath(self, node, target, seen=None):#get closest each time
         if seen is None:
             seen = set()
-        print(self.findDistance(node,target))
+        # print(self.findDistance(node,target))
         if self.defectorDict[node] == 1 or node in seen:
             return [node]
+
+
         nextnode = self.findClosestNode(node, target)
 
         if nextnode == target:
@@ -128,6 +130,7 @@ class graphCrawler:
 
     def iterate(self, numTimes):
         allNodes = self.G.nodes()
+        results = []
         for i in range(numTimes):
             for i in range(nx.number_of_nodes(self.G)):
                 # print('PATH-------')
@@ -135,17 +138,24 @@ class graphCrawler:
                 node1 = nodeList[0]
                 node2 = nodeList[1]
                 path = self.getPath(node1,node2)
-                print(node1)
-                print(node2)
-                print(path)
+                seen_nodes = [True if node in path else False for node in self.G.nodes()]
+                nx.set_node_attributes(self.G, 'path', dict(zip(self.G.nodes(),seen_nodes)))
+
+                # buildNetwork.draw_net(self.G, path=True)
+                # print(node1)
+                # print(node2)
+                # print(path)
                 if path[-1] == node2:
-                    print('Success!')
+                    # print('Success!')
                     self.updateWeights(path,1)
+                    results.extend([1])
                 else:
-                    print('FAIl!')
+                    # print('FAIl!')
                     self.updateWeights(path,0)
+                    results.extend([0])
             # print('UPDATING-------')
             self.updateConversion()
+        return results
 
     def get_defector_state(self):
         defectors = nx.get_node_attributes(self.G, 'defector')
@@ -189,19 +199,21 @@ def make_punchline(n=1000, gamma=2.5, temp=0.4, mean_deg=100, d=5,avg = 10):
 
 
 if __name__ == '__main__':
-    # n = 100
-    # gamma = 2.5
-    # temp = 0.4
-    # meanDeg = 15
-    # c = .5
-    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    # myCrawler = graphCrawler(graph, 10)
-    # buildNetwork.draw_net(myCrawler.G)
-    # myCrawler.iterate(100)
-    # print('Defector state', myCrawler.get_defector_state())
-    # buildNetwork.draw_net(myCrawler.G)
+    n = 1000
+    gamma = 2.5
+    temp = 0.4
+    meanDeg = 10
+    c = .2
+    graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    myCrawler = graphCrawler(graph, 10)
+    buildNetwork.draw_net(myCrawler.G)
+    res = myCrawler.iterate(50)
+    print('Defector state', myCrawler.get_defector_state())
+    buildNetwork.draw_net(myCrawler.G)
+    res2 = myCrawler.iterate(10)
+    print(sum(res2)/len(res2))
 
-    make_punchline()
+    # make_punchline()
 
 # n = 100
 # k = 10
