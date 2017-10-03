@@ -36,13 +36,19 @@ class graphCrawler:
         thetaT = self.thetas_dict[target]
         # print('Theta'+  str(thetaN))
         delta = math.pi - abs(math.pi - abs(thetaN - thetaT))
-        rN = self.r_dict[node]
+        rN = self.r_dict[node] #This part did not work I believe hyperbolic is two dimensional parameters
         rT = self.r_dict[target]
         try:
             dist = rN + rT + 2 * math.log(delta/2)
         except:
             dist = None
-        return dist
+
+        ########################################
+        #Alternative
+        posN = self.posDict[node]
+        posT = self.posDict[target]
+
+        return math.sqrt((posT[0]-posN[0])**2 + (posT[1]-posN[1])**2)
 
     def findClosestNode(self, node, target):
         allNeighbors = list(self.G[node].keys())#get all neighbors of the node
@@ -55,6 +61,8 @@ class graphCrawler:
         # print(closeNode)
         minDist = self.findDistance(closeNode,target)#set last value distance to min
         for i in allNeighbors:#loop to check distance of all neighbors
+            if i == target:
+                return i
             dist = self.findDistance(i,target)
             if (minDist is None) or (dist is not None and dist < minDist):
                 misDist = dist
@@ -64,9 +72,11 @@ class graphCrawler:
     def getPath(self, node, target, seen=None):#get closest each time
         if seen is None:
             seen = set()
+        print(self.findDistance(node,target))
         if self.defectorDict[node] == 1 or node in seen:
             return [node]
         nextnode = self.findClosestNode(node, target)
+
         if nextnode == target:
             return [node] + [nextnode]
         seen.add(node)
@@ -143,7 +153,7 @@ class graphCrawler:
         return sum(d_list)/len(d_list)
 
 
-def make_punchline(n=1000, gamma=2.5, temp=0.4, mean_deg=6, d=5,avg = 10):
+def make_punchline(n=1000, gamma=2.5, temp=0.4, mean_deg=100, d=5,avg = 10):
     now = time.time()
     out_vals = np.zeros((d,d))
     C0_vals = np.linspace(0,0.8,d)
@@ -152,7 +162,8 @@ def make_punchline(n=1000, gamma=2.5, temp=0.4, mean_deg=6, d=5,avg = 10):
     b_vals = np.linspace(5,25,d)
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
-            graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
+            graph = buildNetwork.build_ba_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
+            buildNetwork.draw_net(graph)
             myCrawler = graphCrawler(graph, b)
             myCrawler.iterate(10)
             states = np.zeros(avg)
