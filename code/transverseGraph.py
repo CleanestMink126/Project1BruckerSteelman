@@ -32,7 +32,7 @@ class graphCrawler:
 
 
     def findDistance(self,node, target):#simple function to find disance between nodes
-        thetaN = self.thetas_dict[node]
+        thetaN = self.thetas_dict[node]#Thetas are the angles of nodes with respect to the center of the graph
         thetaT = self.thetas_dict[target]
         # print('Theta'+  str(thetaN))
         delta = math.pi - abs(math.pi - abs(thetaN - thetaT))
@@ -44,7 +44,7 @@ class graphCrawler:
             dist = None
 
         ########################################
-        #Alternative
+        #Alternative using pythagorean distance
         posN = self.posDict[node]
         posT = self.posDict[target]
 
@@ -70,14 +70,13 @@ class graphCrawler:
         return closeNode#return closest
 
     def getPath(self, node, target, seen=None):#get closest each time
-        if seen is None:
+        if seen is None:#initialize the set
             seen = set()
         # print(self.findDistance(node,target))
-        if self.defectorDict[node] == 1 or node in seen:
-            return [node]
+        if self.defectorDict[node] == 1 or node in seen:#if we reach a defector or enter into a loop
+            return [node]#return
         nextnode = self.findClosestNode(node, target)
-
-        if nextnode == target:
+        if nextnode == target:#if we reach the end, return the end
             return [node] + [nextnode]
         seen.add(node)
         return [node] + self.getPath(nextnode, target, seen=seen)
@@ -85,7 +84,7 @@ class graphCrawler:
 
     def updateWeights(self,nodeList,delieveredBool):
         lastNode = nodeList[-1]
-        reverseList = nodeList[::-1]
+        reverseList = nodeList[::-1]#run through the path and update each weight according to length
         weightDict = nx.get_node_attributes(self.G, 'weight')
         for l,i in enumerate(reverseList):
             weightDict[i] = weightDict[i]+ delieveredBool*(self.b/len(reverseList)) - 1
@@ -98,26 +97,17 @@ class graphCrawler:
         for node in self.G.nodes():
 
             allNeighbors = list(self.G[node].keys())#get all neighbors of the node
-            # allNeighbors = allNeighbors.copy()
-            # allNeighbors.pop()
-            # assert len(allNeighbors) != len(list(self.G[node].keys()))
-            # print(allNeighbors)
             if allNeighbors:
-                closeNode =random.choice(allNeighbors)#get last value and set to closest
-                # print(node)
-                # print(closeNode)
-                weightj = weightDict[closeNode]
+                otherNode =random.choice(allNeighbors)#get last value and set to closest
+                weightj = weightDict[otherNode]
                 weighti = weightDict[node]
-                # print(weighti)
-                # print(weightj)
                 try:
-                    expVal = math.exp((weighti-weightj)/self.k)
+                    expVal = math.exp((weighti-weightj)/self.k)#find e value
                     # print(expVal)
-                    probabilityChange = 1 / (1 + expVal)
-                                             #calculate proability that the original node will copy its neighbor
+                    probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
                     changeBool = random.random() < probabilityChange#make decision based on probability
                     if changeBool:
-                        self.defectorDict[node] = defectorDict[closeNode]#store difference in defectorness in another array
+                        self.defectorDict[node] = defectorDict[otherNode]#store difference in defectorness in another dict
                 except:
                     continue
 
@@ -127,18 +117,17 @@ class graphCrawler:
 
 
     def iterate(self, numTimes):
-        allNodes = self.G.nodes()
-        for i in range(numTimes):
+        allNodes = self.G.nodes()#get all the nodes
+        for i in range(numTimes):#number of iterations and updates to execute
             for i in range(nx.number_of_nodes(self.G)):
-                # print('PATH-------')
-                nodeList = random.sample(allNodes, 2)
+                nodeList = random.sample(allNodes, 2)#get random 2 nodes
                 node1 = nodeList[0]
                 node2 = nodeList[1]
                 path = self.getPath(node1,node2)
                 # print(node1)
                 # print(node2)
                 # print(path)
-                if path[-1] == node2:
+                if path[-1] == node2:#if the last node is the target node
                     # print('Success!')
                     self.updateWeights(path,1)
                 else:
@@ -154,32 +143,32 @@ class graphCrawler:
 
 
 def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 10):
-    now = time.time()
-    out_vals = np.zeros((d,d))
-    C0_vals = np.linspace(0.2,0.8,d)
+    now = time.time()#get current time
+    out_vals = np.zeros((d,d))#initialize array to store information
+    C0_vals = np.linspace(0.2,0.8,d) #iterate over statrting rate of defectors
     '''I did a hacky fix here, the paper specified C as
     the rate of good boyos but we defined it as defectors so I just do 1 - C'''
-    b_vals = np.linspace(5,25,d)
+    b_vals = np.linspace(5,25,d) # iterate over reward given
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
             graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
             # buildNetwork.draw_net(graph)
-            myCrawler = graphCrawler(graph, b)
-            myCrawler.iterate(10)
+            myCrawler = graphCrawler(graph, b)#create crawler object
+            myCrawler.iterate(avg) #iterate avg number of times than take the mean of the next avg iterations
             states = np.zeros(avg)
             print('INIT')
             for k in range(avg):
                 myCrawler.iterate(1)
                 states[k] = myCrawler.get_defector_state()
             out_vals[i,j] = np.mean(states) # Record the output state of the system
-    times = time.time() - now
-    print(times)
+    times = time.time() - now #time difference
+    print(times)#below are some quick calculations to see how long it should run on  full graph
     nO = 10000
     avg0 = 250
     iterations = 50
     qual= 20 * 60
     mult = (nO / n) * (avg0 / avg) * (iterations) * (qual / (d**2))
-    print('MULT' + str(mult))
+    print('Hours' + str(mult * (times/3600)))
     print(out_vals)
     fig, ax = plt.subplots()
     heatmap = ax.pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
@@ -202,39 +191,3 @@ if __name__ == '__main__':
     # buildNetwork.draw_net(myCrawler.G)
 
     make_punchline()
-
-# n = 100
-# k = 10
-# C = .6
-# G = nx.generators.random_graphs.powerlaw_cluster_graph(n, k, C, seed=None)
-# posDict = {}
-# for i in G.nodes():
-#     posDict[i] = (random.randint(0,100),random.randint(0,100))
-# # print(posDict)
-# myCrawler = graphCrawler(G,10,posDict)
-# myCrawler.iterate(10)
-# pos = dict(Albany=(-74, 43),
-#           Boston=(-71, 42),
-#           NYC=(-74, 41),
-#           Philly=(-75, 40))
-# pos['Albany']
-# G = nx.Graph()
-# G.add_nodes_from(pos)
-# G.nodes()
-# drive_times = {('Albany', 'Boston'): 3,
-#                ('Albany', 'NYC'): 4,
-#                ('Boston', 'NYC'): 4,
-#                ('NYC', 'Philly'): 2}
-# G.add_edges_from(drive_times)
-# G.edges()
-# print(findClosestNode(G,'Albany','Philly',pos))
-# print(getPath(G,'Albany','Philly',pos))
-# nx.draw(G, pos,
-#         node_color=COLORS[1],
-#         node_shape='s',
-#         node_size=2500,
-#         with_labels=True)
-#
-# nx.draw_networkx_edge_labels(G, pos,
-#                              edge_labels=drive_times)
-#
