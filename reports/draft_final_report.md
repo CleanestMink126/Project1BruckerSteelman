@@ -8,6 +8,15 @@
 
 
 
+####TODO
+We still need to make a probabilistic curve that a certain node will defect given a negative payoff.
+
+Additionally we should implement code for a probablistic curve the the node will undefect
+given enough time.
+
+Also in order to support our claims about the code working, should make sure that
+a significant amount of messages are delivered given their conditions.
+
 #### Bibiliography
 
 ##### Citation:
@@ -22,7 +31,7 @@ closest to the destination. However, they added in a probability that a node wou
 message unsendable and in large numbers invalidates the network. This probability is based on the number of defector neighbors
 and how much a reward the node gets for properly delivering a message. They found that each graph they instantiate either
 collapses into nearly all defector or participant given enough time. The probability of collapsing into each is heavily
-influenced by both the size of the kickback the nodes recieve and the state of some "hubs" in the graph that connect to
+influenced by both the size of the kickback the nodes receive and the state of some "hubs" in the graph that connect to
 a large number of nodes. Additionally, they found the state of defectors tend to first organize themselves into clusters
 of all participant or all defector.
 
