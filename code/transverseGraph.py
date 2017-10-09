@@ -20,6 +20,7 @@ class graphCrawler:
         self.thetas_dict = nx.get_node_attributes(G, name ='theta')
         self.r_dict = nx.get_node_attributes(G, name ='r')
         self.bottomVal = -150
+
         if weightDict is None:
             self.weightDict = dict.fromkeys(G.nodes(),5)
         if defectorDict is None:
@@ -28,6 +29,7 @@ class graphCrawler:
             self.posDict = nx.get_node_attributes(self.G, name ='pos')
 
         # print(self.weightDict)
+        nx.set_node_attributes(self.G, name ='time',values = dict.fromkeys(G.nodes(),0))
         nx.set_node_attributes(self.G, name ='weight',values = self.weightDict)
         # nx.set_node_attributes(self.G, 'defector',self.defectorDict)
 
@@ -94,22 +96,37 @@ class graphCrawler:
     def updateConversion(self):
         weightDict = nx.get_node_attributes(self.G, 'weight')
         defectorDict = nx.get_node_attributes(self.G, 'defector')
-
+        timeDict = nx.get_node_attributes(self.G, 'time')
         for node in self.G.nodes():
             if defectorDict[node] == 0:
                 weighti = weightDict[node]
                 try:
-                    # expVal = math.exp((weighti)/self.k)#find e value
-                    # # print(expVal)
-                    # probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
-                    # changeBool = random.random() < probabilityChange#make decision based on probability
-                    if weighti<self.bottomVal:
+                    expVal = math.exp((weighti)/self.k)#find e value
+                    # print(expVal)
+                    probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
+                    changeBool = random.random() < probabilityChange#make decision based on probability
+                    if changeBool:
                         self.defectorDict[node] = 1#store difference in defectorness in another dict
+                except:
+                    continue
+            else if defectorDict[node] == 1:
+                time = timeDict[node]
+                try:
+                    expVal = math.exp((time)/self.k)#find e value
+                    # print(expVal)
+                    probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
+                    changeBool = random.random() < probabilityChange#make decision based on probability
+                    if changeBool:
+                        self.defectorDict[node] = 0#store difference in defectorness in another dict
+                        timeDict[node] = 0
+                    else:
+                        timeDict[node] = timeDict[node] + 1
                 except:
                     continue
 
         # nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
         nx.set_node_attributes(self.G, name ='defector',values = self.defectorDict)
+        nx.set_node_attributes(self.G, name ='time',values = timeDict)
 
 
 
@@ -183,7 +200,7 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 10):
 
 
 if __name__ == '__main__':
-    n = 200
+    n = 5000
     gamma = 2.5
     temp = 0.4
     meanDeg = 10
@@ -199,39 +216,3 @@ if __name__ == '__main__':
     print(sum(res2)/len(res2))
 
     # make_punchline()
-
-# n = 100
-# k = 10
-# C = .6
-# G = nx.generators.random_graphs.powerlaw_cluster_graph(n, k, C, seed=None)
-# posDict = {}
-# for i in G.nodes():
-#     posDict[i] = (random.randint(0,100),random.randint(0,100))
-# # print(posDict)
-# myCrawler = graphCrawler(G,10,posDict)
-# myCrawler.iterate(10)
-# pos = dict(Albany=(-74, 43),
-#           Boston=(-71, 42),
-#           NYC=(-74, 41),
-#           Philly=(-75, 40))
-# pos['Albany']
-# G = nx.Graph()
-# G.add_nodes_from(pos)
-# G.nodes()
-# drive_times = {('Albany', 'Boston'): 3,
-#                ('Albany', 'NYC'): 4,
-#                ('Boston', 'NYC'): 4,
-#                ('NYC', 'Philly'): 2}
-# G.add_edges_from(drive_times)
-# G.edges()
-# print(findClosestNode(G,'Albany','Philly',pos))
-# print(getPath(G,'Albany','Philly',pos))
-# nx.draw(G, pos,
-#         node_color=COLORS[1],
-#         node_shape='s',
-#         node_size=2500,
-#         with_labels=True)
-#
-# nx.draw_networkx_edge_labels(G, pos,
-#                              edge_labels=drive_times)
-#
