@@ -14,6 +14,7 @@ Most Internet-related networks - specifically, in the focus of this paper, the I
 
 We construct synthetic complex networks by starting with a feature, *k*, which has a power law distribution:
 
+<<<<<<< HEAD
 >insert power law equation here:
 
 Where we control for the mean degree of the network with K_min. Each node also also has a *theta* drawn from a uniform random distribution on [0, 2pi). Each pairs of nodes is connected based on the random probability:
@@ -57,12 +58,17 @@ Additionally, each defected node also has a random chance, *C,* of re-cooperatin
 
 #### Conclusion
 
+####TODO
+We still need to make a probabilistic curve that a certain node will defect given a negative payoff.
 
+Additionally we should implement code for a probablistic curve the the node will undefect
+given enough time.
 
-
-
+Also in order to support our claims about the code working, should make sure that
+a significant amount of messages are delivered given their conditions.
 
 #### Bibliography
+
 
 ##### Citation:
 Kleineberg, Kaj-Kolja, and Dirk Helbing. “Collective navigation of complex networks: Participatory greedy routing.” Nature News,
