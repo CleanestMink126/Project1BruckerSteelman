@@ -68,7 +68,6 @@ We perform the optimization and decision-making of each node randomly, based on 
 
 #### Annotated Bibliography
 
-
 Kleineberg, Kaj-Kolja, and Dirk Helbing. “Collective navigation of complex networks: Participatory greedy routing.” Nature News,
 Nature Publishing Group, 6 June 2017, www.nature.com/articles/s41598-017-02910-x. Accessed 21 Sept. 2017.
 

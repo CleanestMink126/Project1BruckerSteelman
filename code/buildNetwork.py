@@ -15,8 +15,8 @@ def get_k(val, mean_deg, gamma, x0=.508, x1=1e30):
     power = -gamma
     min_k = get_k_min(mean_deg, gamma)
     C = (gamma-1)*min_k**(gamma-1)
-    # return (((power+1)/C)*val + x0**(power+1))**(1/(power+1))
-    return ((x1**(power+1) - x0**(power+1))*val + x0**(power+1))**(1/(power+1))*(C**(9/10))
+    k = nx.utils.powerlaw_sequence(1, power)[0]
+    return (k**(power)) * C
 
 
 def k_distribution(mean_deg, gamma):
