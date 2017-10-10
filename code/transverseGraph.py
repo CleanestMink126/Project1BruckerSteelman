@@ -164,7 +164,7 @@ class graphCrawler:
         return sum(d_list)/len(d_list)
 
 
-def make_punchline(n=250, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=15,avg = 10):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
@@ -182,7 +182,6 @@ def make_punchline(n=250, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
                 # buildNetwork.draw_net(graph)
                 myCrawler = graphCrawler(graph, b)#create crawler object
                 myCrawler.iterate(30) #iterate avg number of times than take the mean of the next avg iterations
-
                 for k in range(avg):
                     res = myCrawler.iterate(1)
                     sent.append(1 - (sum(res)/len(res)))
@@ -217,22 +216,22 @@ def make_punchline(n=250, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
 
 
 if __name__ == '__main__':
-    # n = 1000
-    # gamma = 2.5
-    # temp = 0.4
-    # meanDeg = 6
-    # c = 0
-    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    # myCrawler = graphCrawler(graph, 30)
-    # buildNetwork.draw_net(myCrawler.G)
-    # for i in range(50):
-    #     res = myCrawler.iterate(1)
-    #     print(sum(res)/len(res))
-    #     print('Defector state', myCrawler.get_defector_state())
-    #     buildNetwork.draw_net(myCrawler.G)
-    #     break
-    # input()
-    # res2 = myCrawler.iterate(10)
-    # print(sum(res2)/len(res2))
+    n = 200
+    gamma = 2.5
+    temp = 0.4
+    meanDeg = 6
+    c = 0.2
+    graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    myCrawler = graphCrawler(graph, 30)
+    buildNetwork.draw_net(myCrawler.G)
+    for i in range(50):
+        res = myCrawler.iterate(1)
+        print(sum(res)/len(res))
+        print('Defector state', myCrawler.get_defector_state())
+        buildNetwork.draw_net(myCrawler.G)
+        break
+    input()
+    res2 = myCrawler.iterate(10)
+    print(sum(res2)/len(res2))
 
     make_punchline()
