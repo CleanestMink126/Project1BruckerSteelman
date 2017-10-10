@@ -38,7 +38,9 @@ However, in our model, we simulate this process differently, as we discuss later
 
 #### Simulation
 
-In order to get results in a reasonable amount of time, we scaled back Kleineberg et al.'s experiment to only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of  
+In order to get results in a reasonable amount of time, we scaled back Kleineberg et al.'s experiment to only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating.
+
+![The state of the system.](lessWeirdFigure.png)
 
 **Figure 3.** The proportion of cooperators in the network as a function of the payoff, *b*, and the initial proportion of cooperating nodes, *C0*. Simulated with 10 steps on a network with *N* = 1000, *gamma* = 2.5, and mean degree of 6.
 
@@ -47,9 +49,9 @@ In order to get results in a reasonable amount of time, we scaled back Kleineber
 As can be seen in *Figure 3,* the percentage of nodes that cooperate after the system reaches a stable state is highly dependent on the initial proportion of cooperators, as well as the payoff. With a high payoff for successfully sent messages, the success will propagate, and even with a low initial proportion of cooperators, the system will eventually reach a state of mostly cooperation; the same goes for having a high initial proportion of cooperators.
 
 ![The proportion of cooperators over time.](graphic3.png)
-**Figure 4.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25.
+**Figure 4.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
 
-*Figure 4* illustrates this property; with a higher payoff value, the time to converge on a state of high cooperation is faster. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state. 
+*Figure 4* illustrates this property; with a higher payoff value, the time to converge on a state of high cooperation is faster. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
 
 
 #### An Alternative System of Defecting
