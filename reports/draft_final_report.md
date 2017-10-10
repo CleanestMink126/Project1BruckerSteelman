@@ -78,7 +78,7 @@ We perform the optimization and decision-making of each node randomly, based on 
 Similar to the main graph in Kleineberg et al., we ran the system with our version of defection for a range of payoff values and initial conditions, shown in *Figure 6.*.
 
 ![The state of the system.](secondDoublePlot.png)
-**Figure 6.** The top graph shows the rate of defector nodes (denoted by color) versus the payoff and initial condition, with *N* = 250. Each point is averaged over 5 iterations on 3 different graphs after 30 iterations.
+**Figure 6.** The top graph shows the rate of defector nodes (denoted by color) versus the payoff and initial condition, with *N* = 250. Similarly, The bottom graph shows the rate of dropped messages versus the payoff and initial condition. Each point is averaged over 5 rounds on 3 different graphs after 30 iterations.
 
 *Figure 6.* shows similar (although noisier) results to those found by Kleineberg et al. with a few noteable differences. First, since the nodes are now motivated by individual profit rather than profit in comparison to their neighbors, they can now all defect if they are not making back what sending the message costs. The stark block of red on the left hand side for values less than 3 is the manifestation of this property. Since paths between nodes are at minimum 2 nodes long and often times 4 or longer and since the payoff *b* is split equally between nodes, a *b* lower than 3 will make it impossible for nodes to make up the 1 cost to send a message even if all messages are delivered successfully. Thus, all nodes for low b values will be forced into defection.
 
