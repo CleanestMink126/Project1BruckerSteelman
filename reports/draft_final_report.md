@@ -36,22 +36,30 @@ As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-
 
 However, in our model, we simulate this process differently, as we discuss later in the paper. After each node has a chance to change its state, the process of navigation begins again.
 
+#### Previous Results
+
+![The state of the system.](punchLine.png)
+**Figure 3.** Results of the defector networks simulated over a range of starting defector populations and payoff rates.
+
+ Kleineberg et al.'s experiment illustrated properties of their network by simulating it over a variety of initial defector rates and payoff rates. As can be seen in *Figure 3,*, where they demonstrate their model over payoff rates *b* and initial conditions *C0*. This simulation was run with a graph
+ of 10,000 nodes and averaged over 50 separate graphs at each point over 250 iterations.
+
 #### Simulation
 
-In order to get results in a reasonable amount of time, we scaled back Kleineberg et al.'s experiment to only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating.
+In order to get results in a reasonable amount of time, we scaled back Kleineberg et al.'s experiment using only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating.
 
 ![The state of the system.](lessWeirdFigure.png)
 
-**Figure 3.** The proportion of cooperators in the network as a function of the payoff, *b*, and the initial proportion of cooperating nodes, *C0*. Simulated with 10 steps on a network with *N* = 1000, *gamma* = 2.5, and mean degree of 6.
+**Figure 4.** The proportion of cooperators in the network as a function of the payoff, *b*, and the initial proportion of cooperating nodes, *C0*. Simulated with 10 steps on a network with *N* = 1000, *gamma* = 2.5, and mean degree of 6.
 
 #### Impact of System Parameters
 
-As can be seen in *Figure 3,* the percentage of nodes that cooperate after the system reaches a stable state is highly dependent on the initial proportion of cooperators, as well as the payoff. With a high payoff for successfully sent messages, the success will propagate, and even with a low initial proportion of cooperators, the system will eventually reach a state of mostly cooperation; the same goes for having a high initial proportion of cooperators.
+As can be seen in *Figure 4,* the percentage of nodes that cooperate after the system reaches a stable state is highly dependent on the initial proportion of cooperators, as well as the payoff. With a high payoff for successfully sent messages, the success will propagate, and even with a low initial proportion of cooperators, the system will eventually reach a state of mostly cooperation; the same goes for having a high initial proportion of cooperators.
 
 ![The proportion of cooperators over time.](graphic3.png)
-**Figure 4.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
+**Figure 5.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
 
-*Figure 4* illustrates this property; with a higher payoff value, the time to converge on a state of high cooperation is faster. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
+*Figure 5* illustrates this property; with a higher payoff value, the time to converge on a state of high cooperation is faster. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
 
 
 #### An Alternative System of Defecting
@@ -63,8 +71,18 @@ In the algorithm used by Kleineberg et al., each nodes decides whether to defect
 We perform the optimization and decision-making of each node randomly, based on the total payoff of each node. Additionally, each defected node also has a random chance, *C,* of re-cooperating in order to account for things like users turning devices back on. This method of determing which nodes defect is much simpler than that used by Kleineberg et al, and we believe it more accurately reflects the actual behavior of devices. We use this new model to explore how the same parameters have an effect on this system in comparison to how they affect the system used by Kleineberg et al.
 
 #### Results of Internal Greedy decision-Making
+Similar to the main graph in Kleineberg et al., we ran the system with our version of defection for a range of payoff values and initial conditions, shown in *Figure 6.*.
+
+![The state of the system.](secondDoublePlot.png)
+**Figure 6.** The top graph shows the rate of defector nodes (denoted by color) versus the payoff and initial condition, with *N* = 250. Each point is averaged over 5 iterations on 3 different graphs after 30 iterations.
+
+*Figure 6.* shows similar (although noisier) results to those found by Kleineberg et al. with a few noteable differences. First, since the nodes are now motivated by individual profit rather than profit in comparison to their neighbors, they can now all defect if they are not making back what sending the message costs. The stark block of red on the left hand side for values less than 3 is the manifestation of this property. Since paths between nodes are at minimum 2 nodes long and often times 4 or longer and since the payoff *b* is split equally between nodes, a *b* lower than 3 will make it impossible for nodes to make up the 1 cost to send a message even if all messages are delivered successfully. Thus, all nodes for low b values will be forced into defection.
+
+Additionally, our graphs are clearly noisier and less defined than the previous ones. This is due to the significant scale back we had to do due to hardware restrictions. Given enough time and iterations, the noise in the graph should give way to a clear curve like the example.
 
 #### Conclusion
+
+The model of message routing studied by Kleineberg et al. is an abstraction that, although interesting, loses bearing to reality. In the proposed example of IoT devices, their method of determining defector status through looking at neighbors does not make sense for IoT networks, which are more concerned with personal payoff. Instead, defection based on individual payoff better simulates the behavior of nodes in this network and yields more grounded results that show a definite line between viable and non-viable networks.
 
 #### Annotated Bibliography
 

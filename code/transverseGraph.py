@@ -164,7 +164,7 @@ class graphCrawler:
         return sum(d_list)/len(d_list)
 
 
-def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
+def make_punchline(n=250, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
@@ -176,12 +176,13 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
         for j, b in enumerate(b_vals):
             states = []
             sent = []
-            for l in range(5):
+            print(str(i) + ' ' + str(j))
+            for l in range(3):
                 graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
                 # buildNetwork.draw_net(graph)
                 myCrawler = graphCrawler(graph, b)#create crawler object
                 myCrawler.iterate(30) #iterate avg number of times than take the mean of the next avg iterations
-                print('INIT')
+
                 for k in range(avg):
                     res = myCrawler.iterate(1)
                     sent.append(1 - (sum(res)/len(res)))
@@ -200,15 +201,15 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
     f, axarr = plt.subplots(2)
     heatmap = axarr[0].pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
     plt.colorbar(heatmap, ax=axarr[0])
-    axarr[0].set_xticklabels(np.around(b_vals,0), minor=True)
-    axarr[0].set_yticklabels(np.around(C0_vals,2), minor=True)
+    axarr[0].set_xticklabels(np.around(b_vals,0), minor=False)
+    axarr[0].set_yticklabels(np.around(C0_vals,2), minor=False)
     axarr[0].set_title('Percent Defector Versus Payoff and Initial Percent Defector')
     axarr[0].set_xlabel('Payoff (with cost 1)')
     axarr[0].set_ylabel('Initial Defector Rate')
     heatmap = axarr[1].pcolor(sent_vals, cmap=plt.cm.bwr, alpha=0.8)
     plt.colorbar(heatmap, ax=axarr[1])
-    axarr[1].set_xticklabels(np.around(b_vals,0), minor=True)
-    axarr[1].set_yticklabels(np.around(C0_vals,2), minor=True)
+    axarr[1].set_xticklabels(np.around(b_vals,0), minor=False)
+    axarr[1].set_yticklabels(np.around(C0_vals,2), minor=False)
     axarr[1].set_xlabel('Payoff (with cost 1)')
     axarr[1].set_ylabel('Initial Defector Rate')
     axarr[1].set_title('Percent Not Sent Versus Payoff and Initial Percent Defector')
