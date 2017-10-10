@@ -39,6 +39,7 @@ The values *r* and *theta* map each node into a 2-dimensional polar space. Two n
 However, in our model, we simulate this process differently, as we discuss later in the paper. After each node has a chance to change its state, the process of navigation begins again.
 
 #### Simulation Results
+![Graphic 1](lessWeirdFigure.png)
 
 #### Impact of System Parameters on Outcomes
 
@@ -58,16 +59,8 @@ Additionally, each defected node also has a random chance, *C,* of re-cooperatin
 
 #### Conclusion
 
-####TODO
-We still need to make a probabilistic curve that a certain node will defect given a negative payoff.
 
-Additionally we should implement code for a probablistic curve the the node will undefect
-given enough time.
-
-Also in order to support our claims about the code working, should make sure that
-a significant amount of messages are delivered given their conditions.
-
-#### Bibliography
+### Bibliography
 
 
 ##### Citation:

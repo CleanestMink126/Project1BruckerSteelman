@@ -38,7 +38,7 @@ class graphCrawler:
         thetaN = self.thetas_dict[node]#Thetas are the angles of nodes with respect to the center of the graph
         thetaT = self.thetas_dict[target]
         # print('Theta'+  str(thetaN))
-        delta = math.pi - abs(math.pi - abs(thetaN - thetaT))
+        delta = abs(math.pi - abs(math.pi - abs(thetaN - thetaT)))
         rN = self.r_dict[node] #This part did not work I believe hyperbolic is two dimensional parameters
         rT = self.r_dict[target]
         try:
@@ -109,7 +109,7 @@ class graphCrawler:
                         self.defectorDict[node] = 1#store difference in defectorness in another dict
                 except:
                     continue
-            else if defectorDict[node] == 1:
+            elif defectorDict[node] == 1:
                 time = timeDict[node]
                 try:
                     expVal = math.exp((time)/self.k)#find e value
@@ -164,55 +164,69 @@ class graphCrawler:
         return sum(d_list)/len(d_list)
 
 
-def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 10):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
+    sent_vals = np.zeros((d,d))
     C0_vals = np.linspace(0.2,0.8,d) #iterate over statrting rate of defectors
     '''I did a hacky fix here, the paper specified C as
     the rate of good boyos but we defined it as defectors so I just do 1 - C'''
-    b_vals = np.linspace(5,25,d) # iterate over reward given
+    b_vals = np.linspace(0,25,d) # iterate over reward given
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
             graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
             # buildNetwork.draw_net(graph)
             myCrawler = graphCrawler(graph, b)#create crawler object
-            myCrawler.iterate(avg) #iterate avg number of times than take the mean of the next avg iterations
+            myCrawler.iterate(10) #iterate avg number of times than take the mean of the next avg iterations
             states = np.zeros(avg)
+            sent = np.zeros(avg)
             print('INIT')
             for k in range(avg):
-                myCrawler.iterate(1)
+                res = myCrawler.iterate(1)
+                sent[k] = (sum(res)/len(res))
                 states[k] = myCrawler.get_defector_state()
             out_vals[i,j] = np.mean(states) # Record the output state of the system
+            sent_vals[i,j] = np.mean(sent)
     times = time.time() - now #time difference
-    print(times)#below are some quick calculations to see how long it should run on  full graph
-    nO = 10000
-    avg0 = 250
-    iterations = 50
-    qual= 20 * 60
-    mult = (nO / n) * (avg0 / avg) * (iterations) * (qual / (d**2))
-    print('Hours' + str(mult * (times/3600)))
-    print(out_vals)
-    fig, ax = plt.subplots()
-    heatmap = ax.pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
-    ax.set_xticklabels(b_vals, minor=False)
-    ax.set_yticklabels(C0_vals, minor=False)
+    # print(times)#below are some quick calculations to see how long it should run on  full graph
+    # nO = 10000
+    # avg0 = 250
+    # iterations = 50
+    # qual= 20 * 60
+    # mult = (nO / n) * (avg0 / avg) * (iterations) * (qual / (d**2))
+    # print('Hours' + str(mult * (times/3600)))
+    # print(out_vals)
+    f, axarr = plt.subplots(2)
+    heatmap = axarr[0].pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
+    axarr[0].colorbar(heatmap)
+    axarr[0].set_xticklabels(np.around(b_vals,1), minor=False)
+    axarr[0].set_yticklabels(np.around(C0_vals,1), minor=False)
+    axarr[0].title('Percent Defector Versus Payoff and Initial Percent Defector')
+    heatmap = axarr[1].pcolor(sent_vals, cmap=plt.cm.bwr, alpha=0.8)
+    axarr[1].colorbar(heatmap)
+    axarr[1].set_xticklabels(np.around(b_vals,1), minor=False)
+    axarr[1].set_yticklabels(np.around(C0_vals,1), minor=False)
+    axarr[1].title('Percent Sent Versus Payoff and Initial Percent Defector')
     plt.show()
 
 
 if __name__ == '__main__':
-    n = 5000
-    gamma = 2.5
-    temp = 0.4
-    meanDeg = 10
-    c = .5
-    graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    myCrawler = graphCrawler(graph, 30)
-    buildNetwork.draw_net(myCrawler.G)
-    for i in range(50):
-        res = myCrawler.iterate(50)
-        print('Defector state', myCrawler.get_defector_state())
-        buildNetwork.draw_net(myCrawler.G)
-    res2 = myCrawler.iterate(10)
-    print(sum(res2)/len(res2))
+    # n = 1000
+    # gamma = 2.5
+    # temp = 0.4
+    # meanDeg = 6
+    # c = 0
+    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    # myCrawler = graphCrawler(graph, 30)
+    # buildNetwork.draw_net(myCrawler.G)
+    # for i in range(50):
+    #     res = myCrawler.iterate(1)
+    #     print(sum(res)/len(res))
+    #     print('Defector state', myCrawler.get_defector_state())
+    #     buildNetwork.draw_net(myCrawler.G)
+    #     break
+    # input()
+    # res2 = myCrawler.iterate(10)
+    # print(sum(res2)/len(res2))
 
-    # make_punchline()
+    make_punchline()
