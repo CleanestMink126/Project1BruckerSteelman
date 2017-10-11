@@ -164,7 +164,7 @@ class graphCrawler:
         return sum(d_list)/len(d_list)
 
 
-def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=15,avg = 10):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
@@ -174,17 +174,18 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
     b_vals = np.linspace(0,25,d) # iterate over reward given
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
-            graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
-            # buildNetwork.draw_net(graph)
-            myCrawler = graphCrawler(graph, b)#create crawler object
-            myCrawler.iterate(10) #iterate avg number of times than take the mean of the next avg iterations
-            states = np.zeros(avg)
-            sent = np.zeros(avg)
-            print('INIT')
-            for k in range(avg):
-                res = myCrawler.iterate(1)
-                sent[k] = (sum(res)/len(res))
-                states[k] = myCrawler.get_defector_state()
+            states = []
+            sent = []
+            print(str(i) + ' ' + str(j))
+            for l in range(3):
+                graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
+                # buildNetwork.draw_net(graph)
+                myCrawler = graphCrawler(graph, b)#create crawler object
+                myCrawler.iterate(30) #iterate avg number of times than take the mean of the next avg iterations
+                for k in range(avg):
+                    res = myCrawler.iterate(1)
+                    sent.append(1 - (sum(res)/len(res)))
+                    states.append(myCrawler.get_defector_state())
             out_vals[i,j] = np.mean(states) # Record the output state of the system
             sent_vals[i,j] = np.mean(sent)
     times = time.time() - now #time difference
@@ -198,35 +199,39 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10,avg = 5):
     # print(out_vals)
     f, axarr = plt.subplots(2)
     heatmap = axarr[0].pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
-    axarr[0].colorbar(heatmap)
-    axarr[0].set_xticklabels(np.around(b_vals,1), minor=False)
-    axarr[0].set_yticklabels(np.around(C0_vals,1), minor=False)
-    axarr[0].title('Percent Defector Versus Payoff and Initial Percent Defector')
+    plt.colorbar(heatmap, ax=axarr[0])
+    axarr[0].set_xticklabels(np.around(b_vals,0), minor=False)
+    axarr[0].set_yticklabels(np.around(C0_vals,2), minor=False)
+    axarr[0].set_title('Percent Defector Versus Payoff and Initial Percent Defector')
+    axarr[0].set_xlabel('Payoff (with cost 1)')
+    axarr[0].set_ylabel('Initial Defector Rate')
     heatmap = axarr[1].pcolor(sent_vals, cmap=plt.cm.bwr, alpha=0.8)
-    axarr[1].colorbar(heatmap)
-    axarr[1].set_xticklabels(np.around(b_vals,1), minor=False)
-    axarr[1].set_yticklabels(np.around(C0_vals,1), minor=False)
-    axarr[1].title('Percent Sent Versus Payoff and Initial Percent Defector')
+    plt.colorbar(heatmap, ax=axarr[1])
+    axarr[1].set_xticklabels(np.around(b_vals,0), minor=False)
+    axarr[1].set_yticklabels(np.around(C0_vals,2), minor=False)
+    axarr[1].set_xlabel('Payoff (with cost 1)')
+    axarr[1].set_ylabel('Initial Defector Rate')
+    axarr[1].set_title('Percent Not Sent Versus Payoff and Initial Percent Defector')
     plt.show()
 
 
 if __name__ == '__main__':
-    # n = 1000
-    # gamma = 2.5
-    # temp = 0.4
-    # meanDeg = 6
-    # c = 0
-    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    # myCrawler = graphCrawler(graph, 30)
-    # buildNetwork.draw_net(myCrawler.G)
-    # for i in range(50):
-    #     res = myCrawler.iterate(1)
-    #     print(sum(res)/len(res))
-    #     print('Defector state', myCrawler.get_defector_state())
-    #     buildNetwork.draw_net(myCrawler.G)
-    #     break
-    # input()
-    # res2 = myCrawler.iterate(10)
-    # print(sum(res2)/len(res2))
+    n = 200
+    gamma = 2.5
+    temp = 0.4
+    meanDeg = 6
+    c = 0.2
+    graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    myCrawler = graphCrawler(graph, 30)
+    buildNetwork.draw_net(myCrawler.G)
+    for i in range(50):
+        res = myCrawler.iterate(1)
+        print(sum(res)/len(res))
+        print('Defector state', myCrawler.get_defector_state())
+        buildNetwork.draw_net(myCrawler.G)
+        break
+    input()
+    res2 = myCrawler.iterate(10)
+    print(sum(res2)/len(res2))
 
     make_punchline()
