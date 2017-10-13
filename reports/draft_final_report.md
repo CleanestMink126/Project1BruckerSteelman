@@ -1,3 +1,15 @@
+  * More explanation of what experimental "game" was in abstract
+  * Explain what the motivation was in the abstract more
+  * **Show what k actually means and how it works (is it just arbitrary?)**
+  * Make in-depth explanation of what different math things are (cite things from paper?)
+  * Refer to paper in present tense
+  * Proofread it
+  * Explain what colors mean in Figure 4 (and also change colormap)
+  
+
+
+
+
 # Effects of Defectors on Greedy Routing in Complex Networks
 ### Nick Steelman, Matt Brucker
 
