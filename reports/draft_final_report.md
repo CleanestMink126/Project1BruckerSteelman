@@ -92,10 +92,22 @@ In the algorithm used by Kleineberg et al., each nodes decides whether to defect
 
 #### Internal Greedy Decision-Making
 
-We perform the optimization and decision-making of each node randomly, based on the total payoff of each node. Additionally, each defected node also has a random chance, *C,* of re-cooperating in order to account for things like users turning devices back on. This method of determing which nodes defect is much simpler than that used by Kleineberg et al, and we believe it more accurately reflects the actual behavior of devices. We use this new model to explore how the same parameters have an effect on this system in comparison to how they affect the system used by Kleineberg et al.
+We perform the optimization and decision-making of each node randomly, based on the total payoff of each node, with a higher the payoff resulting in  lower probability the node will defect.
+
+<img src="defectEqn.svg" align=center></img>
+
+Where *w* is the net loss or gain of a node and *k* modulates the randomness in the probability of defection.
+
+Additionally, each defected node also has a random chance, *C,* of re-cooperating in order to account for things like users turning devices back on. The longer since a node defected results in a higher probability the node will undefect.
+
+<img src="undefectEqn.svg" align=center></img>
+
+Where *t* is the time since the node became defected and *k* modulates the randomness in the probability of defection.
+
+This method of determining which nodes defect is much simpler than that used by Kleineberg et al, and we believe it more accurately reflects the actual behavior of devices. We use this new model to explore how the same parameters have an effect on this system in comparison to how they affect the system used by Kleineberg et al.
 
 #### Results of Internal Greedy decision-Making
-Similar to the main graph in Kleineberg et al., we ran the system with our version of defection for a range of payoff values and initial conditions, shown in *Figure 6.*.
+Similar to the main graph in Kleineberg et al., we run the system with our version of defection for a range of payoff values and initial conditions, shown in *Figure 6.*.
 
 ![The state of the system.](secondDoublePlot.png)
 **Figure 6.** The top graph shows the rate of defector nodes (denoted by color) versus the payoff and initial condition, with *N* = 250. Similarly, The bottom graph shows the rate of dropped messages versus the payoff and initial condition. Each point is averaged over 5 rounds on 3 different graphs after 30 iterations.
@@ -106,7 +118,7 @@ Additionally, our graphs are clearly noisier and less defined than the previous 
 
 #### Conclusion
 
-The model of message routing studied by Kleineberg et al. is an abstraction that, although interesting, loses bearing to reality. In the proposed example of IoT devices, their method of determining defector status through looking at neighbors does not make sense for IoT networks, which are more concerned with personal payoff. Instead, defection based on individual payoff better simulates the behavior of nodes in this network and yields more grounded results that show a definite line between viable and non-viable networks.
+The model of message routing studied by Kleineberg et al. is an abstraction that, although interesting, loses bearing to reality. In the proposed example of IoT devices, their method of determining defector status through looking at neighbors is not accurate for IoT networks, which are more concerned with personal payoff. Instead, defection based on individual payoff better simulates the behavior of nodes in this network and yields more grounded results that show a definite line between viable and non-viable networks.
 
 #### Annotated Bibliography
 
