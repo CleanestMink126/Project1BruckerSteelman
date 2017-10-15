@@ -28,7 +28,7 @@ The process of getting a message to its destination in a network without complet
 
 We construct synthetic complex networks by starting with a number of nodes *N* with each node assigned a feature, *k*, which is a number randomly sampled from a power law distribution:
 
-<img src="eqn1.png" align=center></img>
+<img src="eqn1.png" align=center width = 200px></img>
 
 Where *alpha* is a parameter based on the mean degree of the network, and *gamma* is the degree of the network in the range (2,3). Each node also also has a *theta* drawn from a uniform random distribution on [0, 2pi). We connect each pair of nodes with a probability that is correlated to how close the thetas of the nodes are and how high the *k* values of the nodes are. Finally, we assign a radius *r* based on its value of *k*, with higher *k* values giving lower *r* values.
 
@@ -94,13 +94,13 @@ In the algorithm used by Kleineberg et al., each nodes decides whether to defect
 
 We perform the optimization and decision-making of each node randomly, based on the total payoff of each node, with a higher the payoff resulting in  lower probability the node will defect.
 
-<img src="defectEqn.svg" align=center></img>
+<img src="defectEqn.svg" align=center width = 200px></img>
 
 Where *w* is the net loss or gain of a node and *k* modulates the randomness in the probability of defection.
 
 Additionally, each defected node also has a random chance, *C,* of re-cooperating in order to account for things like users turning devices back on. The longer since a node defected results in a higher probability the node will undefect.
 
-<img src="undefectEqn.svg" align=center></img>
+<img src="undefectEqn.svg" align=center width = 200px></img>
 
 Where *t* is the time since the node became defected and *k* modulates the randomness in the probability of defection.
 
