@@ -113,7 +113,7 @@ class graphCrawler:
             elif defectorDict[node] == 1:
                 time = timeDict[node]
                 try:
-                    expVal = math.exp((time)/self.k)#find e value
+                    expVal = math.exp((-1 * time)/self.k)#find e value
                     # print(expVal)
                     probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
                     changeBool = random.random() < probabilityChange#make decision based on probability
