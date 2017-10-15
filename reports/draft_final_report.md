@@ -5,7 +5,7 @@
   * Refer to paper in present tense
   * Proofread it
   * Explain what colors mean in Figure 4 (and also change colormap)
-  
+
 
 
 
@@ -50,30 +50,33 @@ As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-
 
 3. *Redistribution:* After *N* messages are sent, whether successfully or unsuccessfully, each node has a chance to change their defector status. Kleineberg et al. determine the probably of changing status by having each node pick a neighbor and copy its state with a probability based on the difference between payoffs; the lower a payoff, the more likely a node is to change status. However, in our model, we simulate this process differently, as we discuss later in the paper. After each node has a chance to change its state, the process of navigation begins again.
 
+#### Impact of System Parameters
+
+In examining the system, there are a large amount of potential interesting variables to change that may yield compelling results. In the original paper, the authors decided to examine the effects of the parameters *b*, the payoff for successful delivery, and *C0*, the initial rate of defectors.
+
+*Figure 3* illustrates this the effect of *b*; with a higher payoff value, the time to converge on a state of high cooperation is faster. Additionally, the the state at which it converges is also altered. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
+
+![The proportion of cooperators over time.](graphic3.png)
+**Figure 3.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
+
+
 #### Previous Results
 
 ![The state of the system.](punchLine.png)
-**Figure 3.** Results of the defector networks simulated over a range of starting defector populations and payoff rates.
+**Figure 4.** Results of the defector networks simulated over a range of starting defector populations and payoff rates.
 
- Kleineberg et al.'s experiment illustrated properties of their network by simulating it over a variety of initial defector rates and payoff rates. As can be seen in *Figure 3,*, where they demonstrate their model over payoff rates *b* and initial conditions *C0*. This simulation was run with a graph
+ Kleineberg et al.'s experiment illustrated properties of their network after reaching a steady state by simulating it over a variety of initial defector rates and payoff rates. As can be seen in *Figure 4,*, where they demonstrate their model over payoff rates *b* and initial conditions *C0*. This simulation was run with a graph
  of 10,000 nodes and averaged over 50 separate graphs at each point over 250 iterations.
 
 #### Simulation
 
-In order to get results in a reasonable amount of time, we scaled back Kleineberg et al.'s experiment using only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating.
+In order to get results in a reasonable amount of time, we scale back Kleineberg et al.'s experiment using only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating.
 
 ![The state of the system.](lessWeirdFigure.png)
 
-**Figure 4.** The proportion of cooperators in the network as a function of the payoff, *b*, and the initial proportion of cooperating nodes, *C0*. Simulated with 10 steps on a network with *N* = 1000, *gamma* = 2.5, and mean degree of 6.
-
-#### Impact of System Parameters
+**Figure 5.** The proportion of cooperators in the network as a function of the payoff, *b*, and the initial proportion of cooperating nodes, *C0*. Simulated with 10 steps on a network with *N* = 1000, *gamma* = 2.5, and mean degree of 6.
 
 As can be seen in *Figure 4,* the percentage of nodes that cooperate after the system reaches a stable state is highly dependent on the initial proportion of cooperators, as well as the payoff. With a high payoff for successfully sent messages, the success will propagate, and even with a low initial proportion of cooperators, the system will eventually reach a state of mostly cooperation; the same goes for having a high initial proportion of cooperators.
-
-![The proportion of cooperators over time.](graphic3.png)
-**Figure 5.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
-
-*Figure 5* illustrates this property; with a higher payoff value, the time to converge on a state of high cooperation is faster. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
 
 
 #### An Alternative System of Defecting
