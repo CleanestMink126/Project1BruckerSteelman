@@ -28,11 +28,14 @@ The process of getting a message to its destination in a network without complet
 
 We construct synthetic complex networks by starting with a number of nodes *N* with each node assigned a feature, *k*, which is a number randomly sampled from a power law distribution:
 
-![The equation for the power law distribution of k.](eqn1.png)
+<img src="eqn1.png" align=center></img>
 
 Where *alpha* is a parameter based on the mean degree of the network, and *gamma* is the degree of the network in the range (2,3). Each node also also has a *theta* drawn from a uniform random distribution on [0, 2pi). We connect each pair of nodes with a probability that is correlated to how close the thetas of the nodes are and how high the *k* values of the nodes are. Finally, we assign a radius *r* based on its value of *k*, with higher *k* values giving lower *r* values.
 
-![A constructed network.](graphic1.png)
+<p align="center">
+ <img src="graphic1.png" width=500px height=500px ></img>
+</p>
+
 **Figure 1.** A synthetic complex network constructed with *N* = 2500.
 
 As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-dimensional polar space. Two nodes' distance in this space represent their similarity, not their physical distance; two nodes that are very close to each other are very similar. Also note that low values of *r* are very rare, as they correspond to high values of *k*, which has a very low probability in a power law distribution.
@@ -42,7 +45,9 @@ As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-
 *Greedy routing* is the process of sending messages from a source to a destination node by hopping from node to node. The key component of greedy routing is that each node determines whether to participate based on how much payoff it's getting; if a node keeps spending resources without any payoff, it becomes more likely to defect. We run greedy routing in three phases:
 1. *Initialization:* After creating a synthetic complex network of *N* nodes using the process above, we distribute the initial cooperator and defector nodes randomly with proportion *C0*.
 
-![A constructed network.](graphic2.png)
+<p align="center">
+ <img src="graphic2.png" width=500px height=500px ></img>
+</p>
 
 **Figure 2.** A synthetic complex network constructed with *N* = 2500 and *C0* = 0.6. Orange nodes represent defectors.
 
@@ -70,7 +75,9 @@ In order to get results in a reasonable amount of time, we scaled back Kleineber
 
 As can be seen in *Figure 4,* the percentage of nodes that cooperate after the system reaches a stable state is highly dependent on the initial proportion of cooperators, as well as the payoff. With a high payoff for successfully sent messages, the success will propagate, and even with a low initial proportion of cooperators, the system will eventually reach a state of mostly cooperation; the same goes for having a high initial proportion of cooperators.
 
-![The proportion of cooperators over time.](graphic3.png)
+<p align="center">
+ <img src="graphic3.png" width=500px height=500px ></img>
+</p>
 **Figure 5.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
 
 *Figure 5* illustrates this property; with a higher payoff value, the time to converge on a state of high cooperation is faster. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
