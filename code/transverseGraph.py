@@ -77,7 +77,7 @@ class graphCrawler:
             seen = set()
         # print(self.findDistance(node,target))
         if self.defectorDict[node] == 1 or node in seen:#if we reach a defector or enter into a loop
-            return [node] #return
+            return [] #return
         nextnode = self.findClosestNode(node, target)
         if nextnode == target:#if we reach the end, return the end
             return [node] + [nextnode]
@@ -86,6 +86,8 @@ class graphCrawler:
 
 
     def updateWeights(self,nodeList,delieveredBool):
+        if not nodeList:
+            return
         lastNode = nodeList[-1]
         reverseList = nodeList[::-1]#run through the path and update each weight according to length
         weightDict = nx.get_node_attributes(self.G, 'weight')
@@ -97,34 +99,56 @@ class graphCrawler:
         weightDict = nx.get_node_attributes(self.G, 'weight')
         defectorDict = nx.get_node_attributes(self.G, 'defector')
         timeDict = nx.get_node_attributes(self.G, 'time')
+
+
         for node in self.G.nodes():
-            if defectorDict[node] == 0:
+
+            allNeighbors = list(self.G[node].keys())#get all neighbors of the node
+            if allNeighbors:
+                otherNode =random.choice(allNeighbors)#get last value and set to closest
+                weightj = weightDict[otherNode]
                 weighti = weightDict[node]
                 try:
-                    expVal = math.exp((weighti)/self.k)#find e value
+                    expVal = math.exp((weighti-weightj)/self.k)#find e value
                     # print(expVal)
                     probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
                     changeBool = random.random() < probabilityChange#make decision based on probability
                     if changeBool:
-                        self.defectorDict[node] = 1#store difference in defectorness in another dict
-                except:
-                    continue
-            elif defectorDict[node] == 1:
-                time = timeDict[node]
-                try:
-                    expVal = math.exp((-1 * time)/self.k)#find e value
-                    # print(expVal)
-                    probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
-                    changeBool = random.random() < probabilityChange#make decision based on probability
-                    if changeBool:
-                        self.defectorDict[node] = 0#store difference in defectorness in another dict
-                        timeDict[node] = 0
-                    else:
-                        timeDict[node] = timeDict[node] + 1
+                        print('w1:{}, w2:{}, def:{}'.format(weighti,weightj, defectorDict[otherNode]))
+                        self.defectorDict[node] = defectorDict[otherNode]#store difference in defectorness in another dict
                 except:
                     continue
 
-        # nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
+
+        #
+        # for node in self.G.nodes():
+        #     if defectorDict[node] == 0:
+        #         weighti = weightDict[node]
+        #         try:
+        #             expVal = math.exp((weighti)/self.k)#find e value
+        #             # print(expVal)
+        #             probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
+        #             changeBool = random.random() < probabilityChange#make decision based on probability
+        #             if changeBool:
+        #                 self.defectorDict[node] = 1#store difference in defectorness in another dict
+        #         except:
+        #             continue
+        #     elif defectorDict[node] == 1:
+        #         time = timeDict[node]
+        #         try:
+        #             expVal = math.exp((-1 * time)/self.k)#find e value
+        #             # print(expVal)
+        #             probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
+        #             changeBool = random.random() < probabilityChange#make decision based on probability
+        #             if changeBool:
+        #                 self.defectorDict[node] = 0#store difference in defectorness in another dict
+        #                 timeDict[node] = 0
+        #             else:
+        #                 timeDict[node] = timeDict[node] + 1
+        #         except:
+        #             continue
+
+        nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
         nx.set_node_attributes(self.G, name ='defector',values = self.defectorDict)
         nx.set_node_attributes(self.G, name ='time',values = timeDict)
 
@@ -146,7 +170,7 @@ class graphCrawler:
                 # print(node1)
                 # print(node2)
                 # print(path)
-                if path[-1] == node2:#if the last node is the target node
+                if path and path[-1] == node2:#if the last node is the target node
                     # print('Success!')
                     self.updateWeights(path,1)
                     results.extend([1])
@@ -216,22 +240,21 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=15,avg = 10):
 
 
 if __name__ == '__main__':
-    n = 200
-    gamma = 2.5
-    temp = 0.4
-    meanDeg = 6
-    c = 0.2
-    graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    myCrawler = graphCrawler(graph, 30)
-    buildNetwork.draw_net(myCrawler.G)
-    for i in range(50):
-        res = myCrawler.iterate(1)
-        print(sum(res)/len(res))
-        print('Defector state', myCrawler.get_defector_state())
-        buildNetwork.draw_net(myCrawler.G)
-        break
-    input()
-    res2 = myCrawler.iterate(10)
-    print(sum(res2)/len(res2))
+    # n = 1000
+    # gamma = 2.5
+    # temp = 0.4
+    # meanDeg = 6
+    # c = 0.4
+    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    # myCrawler = graphCrawler(graph, 15)
+    # buildNetwork.draw_net(myCrawler.G)
+    # for i in range(50):
+    #     res = myCrawler.iterate(1)
+    #     print(sum(res)/len(res))
+    #     print('Defector state', myCrawler.get_defector_state())
+    #     buildNetwork.draw_net(myCrawler.G)
+    # input()
+    # res2 = myCrawler.iterate(10)
+    # print(sum(res2)/len(res2))
 
     make_punchline()
