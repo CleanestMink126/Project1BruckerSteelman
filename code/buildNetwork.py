@@ -82,7 +82,7 @@ def assign_network_attributes(G, C, gamma, mean_deg, temp, BA=False):
         max_deg = max(degrees(G))
         defector_list = [random.uniform(0, max_deg) < G.degree(node)*C for node in all_nodes]
     else:
-        defector_list = [random.uniform(0, 1) < C for _ in range(n)]
+        defector_list = [random.uniform(0, 1) > C for _ in range(n)]
 
 
     thetas_dict = dict(zip(all_nodes, thetas))
