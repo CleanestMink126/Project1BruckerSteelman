@@ -80,9 +80,9 @@ def assign_network_attributes(G, C, gamma, mean_deg, temp, BA=False):
     k_vals = [get_k_dist(mean_deg, gamma) for _ in range(n)]  # Assign each node a k randomly
     if BA:  # If we're using a BA graph, distribute defectors according to their degree
         max_deg = max(degrees(G))
-        defector_list = [random.uniform(0, max_deg) < G.degree(node)*C for node in all_nodes]
+        defector_list = [random.uniform(0, max_deg) > G.degree(node)*C for node in all_nodes]
     else:
-        defector_list = [random.uniform(0, 1) < C for _ in range(n)]
+        defector_list = [random.uniform(0, 1) > C for _ in range(n)]
 
 
     thetas_dict = dict(zip(all_nodes, thetas))
