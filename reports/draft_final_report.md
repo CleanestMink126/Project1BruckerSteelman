@@ -44,6 +44,18 @@ As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-
 3. *Redistribution:* After *N* messages are sent, whether successfully or unsuccessfully, each node has a chance to change their defector status. Kleineberg et al. determine the probably of changing status by having each node randomly pick a neighbor and copy its state with a probability based on the difference between payoffs (Equation 2, [[1]](www.nature.com/articles/s41598-017-02910-x)); the lower a payoff, the more likely a node is to change status. However, in our model, we simulate this process differently, as we discuss later in the paper. After each node has a chance to change its state, the process of navigation begins again.
 
 
+#### Impact of System Parameters
+
+In examining the system, there are a large amount of potential interesting variables to change that may yield compelling results. In the original paper, the authors decided to examine the effects of the parameters *b*, the payoff for successful delivery, and *C0*, the initial rate of defectors.
+
+*Figure 3* illustrates this the effect of *b*; with a higher payoff value, the time to converge on a state of high cooperation is faster. Additionally, the the state at which it converges is also altered. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
+
+<p align="center">
+ <img src="graphic3.png" width=500px height=500px ></img>
+</p>
+
+**Figure 3.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
+
 
 #### Previous Results
 
@@ -73,19 +85,6 @@ As can be seen in *Figure 4,* the percentage of sent messages after the system r
 **Figure 6.** The proportion of cooperating nodes over time. Simulated in a graph with *N* = 1000, *gamma* = 2.5, mean degree = 6, *b* = 25, and *C0* ~= 0.2.
 
 This bistable property is also illustrated through the proportion of cooperators over time. As *Figure 6* shows, with a high reward for successful delivery (*b* = 25) the proportion of cooperators increases rapidly, even with a low initial proportion of cooperators. Similarly, the proportion of successful message deliveries also increases, although not at the exact same rate as the proportion of cooperators, since there will always be some failures due to loops in the message sending process. This graph also displays behavior very similar to Kleineberg et al's (Figure 3a, [[1]](www.nature.com/articles/s41598-017-02910-x))
-
-#### Impact of System Parameters
-
-In examining the system, there are a large amount of potential interesting variables to change that may yield compelling results. In the original paper, the authors decided to examine the effects of the parameters *b*, the payoff for successful delivery, and *C0*, the initial rate of defectors.
-
-*Figure 3* illustrates this the effect of *b*; with a higher payoff value, the time to converge on a state of high cooperation is faster. Additionally, the the state at which it converges is also altered. There is also a distinct grouping between the high and low proportions of cooperators, which indicates that the system tends to converge to either a cooperative or non-cooperative state.
-
-<p align="center">
- <img src="graphic3.png" width=500px height=500px ></img>
-</p>
-
-**Figure 3.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
-
 
 #### An Alternative System of Defecting
 
