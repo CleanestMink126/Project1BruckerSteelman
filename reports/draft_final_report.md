@@ -1,20 +1,8 @@
-  * More explanation of what experimental "game" was in abstract
-  * Explain what the motivation was in the abstract more
-  * **Show what k actually means and how it works (is it just arbitrary?)**
-  * Make in-depth explanation of what different math things are (cite things from paper?)
-  * Refer to paper in present tense
-  * Proofread it
-  * Explain what colors mean in Figure 4 (and also change colormap)
-
-
-
-
-
 # Effects of Defectors on Greedy Routing in Complex Networks
 ### Nick Steelman, Matt Brucker
 
 #### Abstract
-In the realm of Internet of Things (IoT) devices, the successful delivery of messages is critical to the functioning of the system. Network navigation in this realm can be difficult if each node only knows its current surroundings, but it can be successful as long as each node passes the message to the neighbor most likely to be close to the destination. If all devices cooperate in the sending of messages, the system as a whole achieves success; but if a certain percentage of devices refuse to pass on messages, complete breakdown of the network can occur. In this paper, we reconstruct and build upon the work of Kleineberg, Kaj-Kolja and Helbing. We replicate their model, in which individual nodes pay a cost to help send messages, but are rewarded for helping successfully deliver a message, but may defect depending on the profitability. Then, we construct synthetic networks according to a power-law feature distribution, mapping to the real-world topology of networks such as the IoT. We next perform greedy participatory greedy routing using one of two algorithms. The first, used by Kleineberg et al., has nodes choose to copy the behavior of one of their neighbors randomly when deciding whether to pass on messages or drop them. In the second, we examine an alternate method to defection that logically approximates the behavior in the IoT world. Rather than copying base on neighbors, Our method has nodes simply choose randomly whether to defect based on their payoff from the game, symbolizing an individual device's decisions on external payoff, versus battery drain or a comparable disadvantage from participating in a routing network. From this simulation, we find that the system reaches a state of cooperation or noncooperation that is dependent on the initial cooperators, as well as the payoff for successfully sending messages.
+In the realm of Internet of Things (IoT) devices, the successful delivery of messages is critical to the functioning of the system. Network navigation in this realm can be difficult if each node only knows its current surroundings, but it can be successful as long as each node passes the message to the neighbor most likely to be close to the destination. If all devices cooperate in the sending of messages, the system as a whole achieves success; but if a certain percentage of devices refuse to pass on messages, complete breakdown of the network can occur. In this paper, we reconstruct and build upon the work of Kleineberg, Kaj-Kolja and Helbing. We replicate their model, in which individual nodes pay a cost to help send messages, but are rewarded for helping successfully deliver a message, but may defect depending on the profitability. We construct synthetic networks according to a power-law feature distribution, mapping to the real-world topology of networks such as the IoT. We next perform greedy routing. Kleineberg et al. propose a method of routing which has nodes choose to copy the behavior of one of their neighbors randomly when deciding whether to pass on messages or drop them. From replicating this method, we find that the system reaches a bistable state of cooperation or noncooperation that is dependent on the initial cooperators, as well as the payoff for successfully sending messages. Finally, we examine an alternate method to defection that logically approximates the behavior in the IoT world. Rather than copying base on neighbors, Our method has nodes simply choose randomly whether to defect based on their payoff from sending messages. We investigate how this system responds qualitatively to variations in parameters and find whether the system also has the bistable property.
 
 #### IoT and Greedy Routing
 
@@ -26,11 +14,11 @@ The process of getting a message to its destination in a network without complet
 
 ##### Building Complex Networks
 
-We construct synthetic complex networks by starting with a number of nodes *N* with each node assigned a feature, *k*, which is a number randomly sampled from a power law distribution:
+We construct synthetic complex networks by starting with a number of nodes *N* with each node assigned a value for *k*, which is an arbitrary number randomly sampled from a power law distribution:
 
 <img src="eqn1.png" align=center width = 200px></img>
 
-Where *alpha* is a parameter based on the mean degree of the network, and *gamma* is the degree of the network in the range (2,3). Each node also also has a *theta* drawn from a uniform random distribution on [0, 2pi). We connect each pair of nodes with a probability that is correlated to how close the thetas of the nodes are and how high the *k* values of the nodes are. Finally, we assign a radius *r* based on its value of *k*, with higher *k* values giving lower *r* values.
+Where *alpha* is a parameter based on the mean degree of the network, and *gamma* is the degree of the network in the range (2,3). Each node also also has a *theta* drawn from a uniform random distribution on [0, 2pi). We connect each pair of nodes with a probability that is correlated to how close the thetas of the nodes are and how high the *k* values of the nodes are (Equation 5, [[1]](www.nature.com/articles/s41598-017-02910-x)). Finally, we assign a radius *r* based on its value of *k*, with higher *k* values giving lower *r* values (Equation 6, [[1]](www.nature.com/articles/s41598-017-02910-x)).
 
 <p align="center">
  <img src="graphic1.png" width=500px height=500px ></img>
@@ -53,7 +41,38 @@ As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-
 
 2. *Navigation:* We randomly choose two nodes as the source and destination nodes for a message. Nodes then attempt to bring the message closer to the destination by forwarding it to their neighbor closest to the destination. This occurs until the message is successfully delivered, or until sending fails from either reaching a defector node or reaching a loop. At this point, payoffs are calculated: all nodes that participated in the sending start with an initial payoff of -1, since they used resources to help send the message. If the sending is successful, they all receive a share of the payoff, *b/l*, where *b* is the total payoff and *l* is the length of the chain of nodes that sent the message.
 
-3. *Redistribution:* After *N* messages are sent, whether successfully or unsuccessfully, each node has a chance to change their defector status. Kleineberg et al. determine the probably of changing status by having each node pick a neighbor and copy its state with a probability based on the difference between payoffs; the lower a payoff, the more likely a node is to change status. However, in our model, we simulate this process differently, as we discuss later in the paper. After each node has a chance to change its state, the process of navigation begins again.
+3. *Redistribution:* After *N* messages are sent, whether successfully or unsuccessfully, each node has a chance to change their defector status. Kleineberg et al. determine the probably of changing status by having each node randomly pick a neighbor and copy its state with a probability based on the difference between payoffs (Equation 2, [[1]](www.nature.com/articles/s41598-017-02910-x)); the lower a payoff, the more likely a node is to change status. However, in our model, we simulate this process differently, as we discuss later in the paper. After each node has a chance to change its state, the process of navigation begins again.
+
+
+
+#### Previous Results
+
+<p align="center">
+ <img src="systemout1.png" width=250px height=250px ></img>
+</p>
+
+**Figure 4.** Results of the defector networks simulated over a range of starting defector populations and payoff rates. Taken from
+
+ Kleineberg et al.'s experiment illustrated properties of their network after reaching a steady state by simulating it over a variety of initial defector rates and payoff rates. As can be seen in *Figure 4,*, where they demonstrate their model over payoff rates *b* and initial conditions *C0*. This simulation was run with a graph
+ of 10,000 nodes and averaged over 50 separate graphs at each point over 250 iterations.
+
+#### Simulation
+
+Because their experiment would take a prohibitive amount of time for us to replicate exactly, we scale back Kleineberg et al.'s experiment using only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating as a whole - while this doesn't directly correlate to Kleineberg et al's measure of how the system behaves, which uses the proportion of successful messages sent, we find that it gives qualitatively similar results that correspond to the behavior of the system, since more cooperating nodes result in a higher proportion of successfully sent messages.
+
+![The state of the system.](lessWeirdFigure.png)
+
+**Figure 5.** The proportion of cooperators in the network as a function of the payoff, *b*, and the initial proportion of cooperating nodes, *C0*. Simulated with 10 steps on a network with *N* = 1000, *gamma* = 2.5, and mean degree of 6.
+
+As can be seen in *Figure 4,* the percentage of nodes that cooperate after the system reaches a stable state is highly dependent on the initial proportion of cooperators, as well as the payoff. With a high payoff for successfully sent messages, the success will propagate, and even with a low initial proportion of cooperators, the system will eventually reach a state of mostly cooperation; the same goes for having a high initial proportion of cooperators. Our results also exhibit several important behaviors demonstrated in Kleineberg et al.'s paper. First, as shown in Figure 5, our system has the bistable behavior that Kleineberg et al. found (shown in Figure 4), in which the system reaches a state where almost all nodes either cooperate or defect. The dark area in Figure 5 shows the success state, where almost all nodes cooperate; the light area shows the state in which almost all nodes defect. Our graph is more noisy than Kleineberg et al's, which is due to the fact that our graph is smaller, averages over fewer iterations, and also sweeps through fewer values of *b* and *C0*.
+
+<p align="center">
+ <img src="Validation1.png" width=500px height=500px ></img>
+</p>
+
+**Figure 6.** The proportion of cooperating nodes over time. Simulated in a graph with *N* = 1000, *gamma* = 2.5, mean degree = 6, *b* = 25, and *C0* ~= 0.2.
+
+This bistable property is also illustrated through the proportion of cooperators over time. As *Figure 6* shows, with a high reward for successful delivery (*b* = 25) the proportion of cooperators increases rapidly, even with a low initial proportion of cooperators. Similarly, the proportion of successful message deliveries also increases, although not at the exact same rate as the proportion of cooperators, since there will always be some failures due to loops in the message sending process. This graph also displays behavior very similar to Kleineberg et al's (Figure 3a, [[1]](www.nature.com/articles/s41598-017-02910-x))
 
 #### Impact of System Parameters
 
@@ -64,26 +83,8 @@ In examining the system, there are a large amount of potential interesting varia
 <p align="center">
  <img src="graphic3.png" width=500px height=500px ></img>
 </p>
+
 **Figure 3.** The proportion of cooperators over time, with *N* = 1000, and *b* = 10 and 25, and *C0* ~= 0.7.
-
-#### Previous Results
-
-![The state of the system.](punchLine.png)
-**Figure 4.** Results of the defector networks simulated over a range of starting defector populations and payoff rates.
-
- Kleineberg et al.'s experiment illustrated properties of their network after reaching a steady state by simulating it over a variety of initial defector rates and payoff rates. As can be seen in *Figure 4,*, where they demonstrate their model over payoff rates *b* and initial conditions *C0*. This simulation was run with a graph
- of 10,000 nodes and averaged over 50 separate graphs at each point over 250 iterations.
-
-#### Simulation
-
-In order to get results in a reasonable amount of time, we scale back Kleineberg et al.'s experiment using only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating.
-
-![The state of the system.](lessWeirdFigure.png)
-
-**Figure 5.** The proportion of cooperators in the network as a function of the payoff, *b*, and the initial proportion of cooperating nodes, *C0*. Simulated with 10 steps on a network with *N* = 1000, *gamma* = 2.5, and mean degree of 6.
-
-As can be seen in *Figure 4,* the percentage of nodes that cooperate after the system reaches a stable state is highly dependent on the initial proportion of cooperators, as well as the payoff. With a high payoff for successfully sent messages, the success will propagate, and even with a low initial proportion of cooperators, the system will eventually reach a state of mostly cooperation; the same goes for having a high initial proportion of cooperators.
-
 
 
 #### An Alternative System of Defecting
@@ -107,22 +108,25 @@ Where *t* is the time since the node became defected and *k* modulates the rando
 This method of determining which nodes defect is much simpler than that used by Kleineberg et al, and we believe it more accurately reflects the actual behavior of devices. We use this new model to explore how the same parameters have an effect on this system in comparison to how they affect the system used by Kleineberg et al.
 
 #### Results of Internal Greedy decision-Making
-Similar to the main graph in Kleineberg et al., we run the system with our version of defection for a range of payoff values and initial conditions, shown in *Figure 6.*.
+Similar to the main graph in Kleineberg et al., we run the system with our version of defection for a range of payoff values and initial conditions, shown in *Figure 7.*.
 
 ![The state of the system.](secondDoublePlot.png)
-**Figure 6.** The top graph shows the rate of defector nodes (denoted by color) versus the payoff and initial condition, with *N* = 250. Similarly, The bottom graph shows the rate of dropped messages versus the payoff and initial condition. Each point is averaged over 5 rounds on 3 different graphs after 30 iterations.
+**Figure 7.** The top graph shows the rate of defector nodes (denoted by color) versus the payoff and initial condition, with *N* = 250. Similarly, The bottom graph shows the rate of dropped messages versus the payoff and initial condition. Each point is averaged over 5 rounds on 3 different graphs after 30 iterations.
 
-*Figure 6.* shows similar (although noisier) results to those found by Kleineberg et al. with a few noteable differences. First, since the nodes are now motivated by individual profit rather than profit in comparison to their neighbors, they can now all defect if they are not making back what sending the message costs. The stark block of red on the left hand side for values less than 3 is the manifestation of this property. Since paths between nodes are at minimum 2 nodes long and often times 4 or longer and since the payoff *b* is split equally between nodes, a *b* lower than 3 will make it impossible for nodes to make up the 1 cost to send a message even if all messages are delivered successfully. Thus, all nodes for low b values will be forced into defection.
+*Figure 7.* shows similar (although noisier) results to those found by Kleineberg et al. with a few notable differences. First, since the nodes are now motivated by individual profit rather than profit in comparison to their neighbors, they can now all defect if they are not making back what sending the message costs. The solid block of red on the left hand side for values less than 3 is the manifestation of this property. Since paths between nodes are at minimum 2 nodes long and often times 4 or longer and since the payoff *b* is split equally between nodes, a *b* lower than 3 will make it impossible for nodes to make up the 1 cost to send a message even if all messages are delivered successfully. Thus, all nodes for low b values will be forced into defection.
 
 Additionally, our graphs are clearly noisier and less defined than the previous ones. This is due to the significant scale back we had to do due to hardware restrictions. Given enough time and iterations, the noise in the graph should give way to a clear curve like the example.
 
+Qualitatively, our graphs look similar to those generated with the original defection method. Increasing both the initial proportion of cooperators, as well as the payoff, increases the final proportion of cooperators and the success rate for sending messages. However, in the bottom graph, there does appear to be less of a solid divide between successful and unsuccessful states. Besides noise due to a low number of averaged iterations, this is also likely caused by a less noticeable bistability in the system. In the original system, each node defecting would make other nodes more likely to defect since each node chooses to copy the state of a random neighbor, so once a few nodes defect, the rest are more likely to follow. Our method of defecting removes that effect, so the critical point of success is much less prominent.
+
+
 #### Conclusion
 
-The model of message routing studied by Kleineberg et al. is an abstraction that, although interesting, loses bearing to reality. In the proposed example of IoT devices, their method of determining defector status through looking at neighbors is not accurate for IoT networks, which are more concerned with personal payoff. Instead, defection based on individual payoff better simulates the behavior of nodes in this network and yields more grounded results that show a definite line between viable and non-viable networks.
+Kleineberg et al. explore participatory greedy routing and find that the system has a bistable property, reaching a successful or unsuccessful state dependent on the payoff and initial proportion of cooperating nodes. We replicate their findings, and find that the model of message routing studied by Kleineberg et al. is an abstraction that, although interesting, doesn't map very well to reality. In the proposed example of IoT devices, their method of determining defector status through looking at neighbors is not accurate for IoT networks, which are more concerned with personal payoff. Instead, defection based on individual payoff better simulates the behavior of nodes in this network. After simulating the same situations with this new method of defecting, we find that the system loses some of its bistability; when nodes are no longer looking to their neighbors, the system loses the "avalanche effect" of a few nodes choosing to cooperate or defect. This yields results more grounded in the reality of how IoT devices behave.
 
 #### Annotated Bibliography
 
-Kleineberg, Kaj-Kolja, and Dirk Helbing. “Collective navigation of complex networks: Participatory greedy routing.” Nature News,
+[1] Kleineberg, Kaj-Kolja, and Dirk Helbing. “Collective navigation of complex networks: Participatory greedy routing.” Nature News,
 Nature Publishing Group, 6 June 2017, www.nature.com/articles/s41598-017-02910-x. Accessed 21 Sept. 2017.
 
 *This paper dives into abstracting a simulating systems such as the emerging network of IoT devices which desire
@@ -136,7 +140,7 @@ influenced by both the size of the kickback the nodes receive and the state of s
 a large number of nodes. Additionally, they found the state of defectors tend to first organize themselves into clusters
 of all participant or all defector.*
 
-Krapivsky, P. L., and S. Redner. “Emergent Network Modularity.” [1706.01514] Emergent Network Modularity,
+[2] Krapivsky, P. L., and S. Redner. “Emergent Network Modularity.” [1706.01514] Emergent Network Modularity,
 20 June 2017, arxiv.org/abs/1706.01514. Accessed 18 Sept. 2017.
 
 *This paper explored a model of graph growth and it's emergent properties. The method of growth was
@@ -152,7 +156,6 @@ for star graphs with little imperfections. Additionally, the likelihood for very
 develop with very large graphs (~E6 Nodes) is also very likely, with the graphs appearing as shallowly linked
 individual structures rather than a cohesive unit.*
 
-[Epidemic Spreading in Scale-Free Networks](https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.86.3200)
-*Pastor-Satorras, Romualdo; Vespignani, Allesandro;*  
+[3] Pastor-Satorras, Romualdo, and Allesandro Vespignani. "Epidemic Spreading in Scale-Free Networks." https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.86.3200
 
 *This paper investigates the spreading of epidemics in scale-free networks. Using a susceptible-infected-susceptible model in which nodes are susceptible, become infected, and recover to become susceptible again, fixed-size networks have an epidemic threshold, a rate of spreading below which the disease dies out. Vespignani and Pastor-Satorras apply this model to scale-free networks, with two important discoveries. Firstly, in scale-free networks, the epidemic eventually reaches a steady state where the proportion of infected nodes remains the same. The second discovery is that this proportion is always > 0 for any disease that has a nonzero rate of infection. They compute these findings by investigating epidemics in the Internet, using data from the spreading of computer viruses as validation.*

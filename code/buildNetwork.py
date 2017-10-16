@@ -134,7 +134,7 @@ def degrees(G):
 def draw_net(graph, path=False, **kwargs):
     defect_dict = nx.get_node_attributes(graph, 'defector')
     # print(defect_dict)
-    colors = {True: 'r', False: 'b'}
+    colors = {True: 'b', False: 'orange'}
     defect_list = [colors[defect_dict[node]] for node in graph.nodes()]
 
     if path:
@@ -147,6 +147,6 @@ def draw_net(graph, path=False, **kwargs):
 
 
 if __name__ == '__main__':
-    net = build_synthetic_network(250, 0.1, 2.5, 20, 0.4)
+    net = build_synthetic_network(2500, 0.4, 2.5, 6, 0.4)
     # net = build_ba_network(100, 0.2, 2.5, 20, 0.4, num_connect=15)
     draw_net(net)
