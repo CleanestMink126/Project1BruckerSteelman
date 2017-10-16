@@ -165,7 +165,7 @@ class graphCrawler:
         return sum(d_list)/len(d_list)
 
 
-def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10, avg = 50):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=5, avg = 50):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
@@ -213,7 +213,8 @@ def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=10, avg = 50):
     # axarr[1].set_ylabel('Initial Defector Rate')
     # axarr[1].set_title('Percent Not Sent Versus Payoff and Initial Percent Defector')
     fig, ax = plt.subplots()
-    heatmap = ax.pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
+    heatmap = ax.pcolor(out_vals, cmap=plt.cm.afmhot, alpha=0.8)
+    cbar = fig.colorbar(heatmap, ticks = [0, 0.2, 0.4, 0.6, 0.8, 1])
     ax.set_xticklabels(b_vals, minor=False)
     ax.set_yticklabels(C0_vals, minor=False)
     plt.show()
@@ -224,46 +225,40 @@ if __name__ == '__main__':
     gamma = 2.5
     temp = 0.4
     meanDeg = 6
-<<<<<<< Updated upstream
-    c = 0.2
-=======
     c = .7
->>>>>>> Stashed changes
     graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
     myCrawler = graphCrawler(graph, 25)
     buildNetwork.draw_net(myCrawler.G)
-<<<<<<< Updated upstream
-    for i in range(50):
-        res = myCrawler.iterate(1)
-        print(sum(res)/len(res))
-        print('Defector state', myCrawler.get_defector_state())
-        buildNetwork.draw_net(myCrawler.G)
-        break
-    input()
-    res2 = myCrawler.iterate(10)
-    print(sum(res2)/len(res2))
-=======
-    coops = []
-    for _ in range(100):
-        myCrawler.iterate(1)
-        coops.extend([myCrawler.get_cooperator_state()])
-
-    graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    myCrawler = graphCrawler(graph, 10)
-    buildNetwork.draw_net(myCrawler.G)
-    coops2 = []
-    for _ in range(100):
-        myCrawler.iterate(1)
-        coops2.extend([myCrawler.get_cooperator_state()])
-
-    coop_plot, = plt.plot(coops, label='b=25')
-    coop_plot2, = plt.plot(coops2, label='b=10')
-    plt.legend(handles=[coop_plot, coop_plot2])
-    plt.xlabel('Iterations')
-    plt.ylabel('Proportion of cooperators')
-    plt.title('Proportion of cooperators over time')
-    plt.show()
+    # for i in range(50):
+    #     res = myCrawler.iterate(1)
+    #     print(sum(res)/len(res))
+    #     print('Defector state', myCrawler.get_defector_state())
+    #     buildNetwork.draw_net(myCrawler.G)
+    #     break
+    # input()
+    # res2 = myCrawler.iterate(10)
     # print(sum(res2)/len(res2))
->>>>>>> Stashed changes
+
+    # coops = []
+    # for _ in range(100):
+    #     myCrawler.iterate(1)
+    #     coops.extend([myCrawler.get_cooperator_state()])
+    #
+    # graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+    # myCrawler = graphCrawler(graph, 10)
+    # buildNetwork.draw_net(myCrawler.G)
+    # coops2 = []
+    # for _ in range(100):
+    #     myCrawler.iterate(1)
+    #     coops2.extend([myCrawler.get_cooperator_state()])
+    #
+    # coop_plot, = plt.plot(coops, label='b=25')
+    # coop_plot2, = plt.plot(coops2, label='b=10')
+    # plt.legend(handles=[coop_plot, coop_plot2])
+    # plt.xlabel('Iterations')
+    # plt.ylabel('Proportion of cooperators')
+    # plt.title('Proportion of cooperators over time')
+    # plt.show()
+    # print(sum(res2)/len(res2))
 
     make_punchline()
