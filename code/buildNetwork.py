@@ -134,7 +134,7 @@ def degrees(G):
 def draw_net(graph, path=False, **kwargs):
     defect_dict = nx.get_node_attributes(graph, 'defector')
     # print(defect_dict)
-    colors = {True: 'b', False: 'orange'}
+    colors = {True: 'orange', False: 'blue'}
     defect_list = [colors[defect_dict[node]] for node in graph.nodes()]
 
     if path:

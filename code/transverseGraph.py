@@ -22,14 +22,14 @@ class graphCrawler:
         self.bottomVal = -150
 
         if weightDict is None:
-            self.weightDict = dict.fromkeys(G.nodes(),5)
+            self.weightDict = dict.fromkeys(G.nodes(),0)
         if defectorDict is None:
             self.defectorDict = nx.get_node_attributes(self.G, name ='defector')
         if posDict is None:
             self.posDict = nx.get_node_attributes(self.G, name ='pos')
 
         # print(self.weightDict)
-        nx.set_node_attributes(self.G, name ='time',values = dict.fromkeys(G.nodes(),0))
+        nx.set_node_attributes(self.G, name ='time',values = dict.fromkeys(G.nodes(),-10))
         nx.set_node_attributes(self.G, name ='weight',values = self.weightDict)
         # nx.set_node_attributes(self.G, 'defector',self.defectorDict)
 
@@ -122,13 +122,13 @@ class graphCrawler:
                     changeBool = random.random() < probabilityChange#make decision based on probability
                     if changeBool:
                         self.defectorDict[node] = 0#store difference in defectorness in another dict
-                        timeDict[node] = 0
+                        timeDict[node] = -10
                     else:
                         timeDict[node] = timeDict[node] + 1
                 except:
                     continue
 
-        nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
+        # nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
         nx.set_node_attributes(self.G, name ='defector',values = self.defectorDict)
         nx.set_node_attributes(self.G, name ='time',values = timeDict)
 
@@ -189,7 +189,7 @@ def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=15, avg = 5):
                 for k in range(avg):
                     res = myCrawler.iterate(1)
                     sent.append((sum(res)/len(res)))
-                    states.append(myCrawler.get_defector_state())
+                    states.append(myCrawler.get_cooperator_state())
             out_vals[i,j] = np.mean(sent) # Record the output state of the system
     times = time.time() - now #time difference
     # print(times)#below are some quick calculations to see how long it should run on  full graph
@@ -232,10 +232,11 @@ if __name__ == '__main__':
     graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
     myCrawler = graphCrawler(graph, 15)
     buildNetwork.draw_net(myCrawler.G)
+    res = myCrawler.iterate(10)
     for i in range(50):
         res = myCrawler.iterate(1)
         print('Sent:',sum(res)/len(res))
-        print('Defector state', myCrawler.get_cooperator_state())
+        print('Cooperator state', myCrawler.get_cooperator_state())
         buildNetwork.draw_net(myCrawler.G)
     input()
     res2 = myCrawler.iterate(10)
