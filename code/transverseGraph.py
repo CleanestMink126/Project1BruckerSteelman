@@ -20,7 +20,7 @@ class graphCrawler:
         self.thetas_dict = nx.get_node_attributes(G, name ='theta')
         self.r_dict = nx.get_node_attributes(G, name ='r')
         self.bottomVal = -150
-
+        #initialize the different dictionaries
         if weightDict is None:
             self.weightDict = dict.fromkeys(G.nodes(),5)
         if defectorDict is None:
@@ -46,11 +46,6 @@ class graphCrawler:
         except:
             dist = None
 
-        ########################################
-        #Alternative using pythagorean distance
-        posN = self.posDict[node]
-        posT = self.posDict[target]
-
         return dist
 
     def findClosestNode(self, node, target):
@@ -67,7 +62,7 @@ class graphCrawler:
             if i == target:
                 return i
             dist = self.findDistance(i,target)
-            if (minDist is None) or (dist is not None and dist < minDist):
+            if (minDist is None) or (dist is not None and dist < minDist): #initialize or update to closest node
                 misDist = dist
                 closeNode = i
         return closeNode#return closest
@@ -119,35 +114,6 @@ class graphCrawler:
                 except:
                     continue
 
-
-        #
-        # for node in self.G.nodes():
-        #     if defectorDict[node] == 0:
-        #         weighti = weightDict[node]
-        #         try:
-        #             expVal = math.exp((weighti)/self.k)#find e value
-        #             # print(expVal)
-        #             probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
-        #             changeBool = random.random() < probabilityChange#make decision based on probability
-        #             if changeBool:
-        #                 self.defectorDict[node] = 1#store difference in defectorness in another dict
-        #         except:
-        #             continue
-        #     elif defectorDict[node] == 1:
-        #         time = timeDict[node]
-        #         try:
-        #             expVal = math.exp((-1 * time)/self.k)#find e value
-        #             # print(expVal)
-        #             probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
-        #             changeBool = random.random() < probabilityChange#make decision based on probability
-        #             if changeBool:
-        #                 self.defectorDict[node] = 0#store difference in defectorness in another dict
-        #                 timeDict[node] = 0
-        #             else:
-        #                 timeDict[node] = timeDict[node] + 1
-        #         except:
-        #             continue
-
         nx.set_node_attributes(self.G,name = 'weight',values = self.weightDict)
         nx.set_node_attributes(self.G, name ='defector',values = self.defectorDict)
         nx.set_node_attributes(self.G, name ='time',values = timeDict)
@@ -165,11 +131,6 @@ class graphCrawler:
                 path = self.getPath(node1,node2)
                 seen_nodes = [True if node in path else False for node in self.G.nodes()]
                 nx.set_node_attributes(self.G, name='path', values = dict(zip(self.G.nodes(),seen_nodes)))
-
-                # buildNetwork.draw_net(self.G, path=True)
-                # print(node1)
-                # print(node2)
-                # print(path)
                 if path and path[-1] == node2:#if the last node is the target node
                     # print('Success!')
                     self.updateWeights(path,1)
@@ -188,22 +149,24 @@ class graphCrawler:
         return 1 - sum(d_list)/len(d_list)
 
 
-def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=15, avg = 5):
+def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=5, avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
     C0_vals = np.linspace(0.1,0.6,d) #iterate over statrting rate of defectors
-    b_vals = np.linspace(5,35,d) # iterate over reward given
+    '''I did a hacky fix here, the paper specified C as
+    the rate of good boyos but we defined it as defectors so I just do 1 - C'''
+    b_vals = np.linspace(0,35,d) # iterate over reward given
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
             states = []
             sent = []
             print(str(i) + ' ' + str(j))
             for l in range(3):
-                graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
+                graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
                 # buildNetwork.draw_net(graph)
                 myCrawler = graphCrawler(graph, b)#create crawler object
-                myCrawler.iterate(25) #iterate avg number of times than take the mean of the next avg iterations
+                myCrawler.iterate(10) #iterate avg number of times than take the mean of the next avg iterations
                 for k in range(avg):
                     res = myCrawler.iterate(1)
                     sent.append((sum(res)/len(res)))
@@ -211,29 +174,6 @@ def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=15, avg = 5):
             out_vals[i,j] = np.mean(states) # Record the output state of the system
             sent_vals[i,j] = np.mean(sent)
     times = time.time() - now #time difference
-    # print(times)#below are some quick calculations to see how long it should run on  full graph
-    # nO = 10000
-    # avg0 = 250
-    # iterations = 50
-    # qual= 20 * 60
-    # mult = (nO / n) * (avg0 / avg) * (iterations) * (qual / (d**2))
-    # print('Hours' + str(mult * (times/3600)))
-    # print(out_vals)
-    # f, axarr = plt.subplots(2)
-    # heatmap = axarr[0].pcolor(out_vals, cmap=plt.cm.bwr, alpha=0.8)
-    # plt.colorbar(heatmap, ax=axarr[0])
-    # axarr[0].set_xticklabels(np.around(b_vals,0), minor=False)
-    # axarr[0].set_yticklabels(np.around(C0_vals,2), minor=False)
-    # axarr[0].set_title('Percent Defector Versus Payoff and Initial Percent Defector')
-    # axarr[0].set_xlabel('Payoff (with cost 1)')
-    # axarr[0].set_ylabel('Initial Defector Rate')
-    # heatmap = axarr[1].pcolor(sent_vals, cmap=plt.cm.bwr, alpha=0.8)
-    # plt.colorbar(heatmap, ax=axarr[1])
-    # axarr[1].set_xticklabels(np.around(b_vals,0), minor=False)
-    # axarr[1].set_yticklabels(np.around(C0_vals,2), minor=False)
-    # axarr[1].set_xlabel('Payoff (with cost 1)')
-    # axarr[1].set_ylabel('Initial Defector Rate')
-    # axarr[1].set_title('Percent Not Sent Versus Payoff and Initial Percent Defector')
     fig, ax = plt.subplots()
     heatmap = ax.pcolor(sent_vals, cmap=plt.cm.RdYlBu, alpha=0.8)
     cbar = fig.colorbar(heatmap, ticks = [0, 0.2, 0.4, 0.6, 0.8, 1])

@@ -58,6 +58,7 @@ As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-
 
 #### Simulation
 
+
 Because their experiment would take a prohibitive amount of time for us to replicate exactly, we scale back Kleineberg et al.'s experiment using only running 10 iterations of message sending before recording the state of the system. We run several iterations in order for the system to eventually reach a steady state, at which time we record the proportion of nodes that are cooperating. This gives us a measure of how much the network is cooperating as a whole - while this doesn't directly correlate to Kleineberg et al's measure of how the system behaves, which uses the proportion of successful messages sent, we find that it gives qualitatively similar results that correspond to the behavior of the system, since more cooperating nodes result in a higher proportion of successfully sent messages.
 
 ![The state of the system.](lessWeirdFigure.png)
