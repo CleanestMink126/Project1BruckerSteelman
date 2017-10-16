@@ -29,7 +29,7 @@ class graphCrawler:
             self.posDict = nx.get_node_attributes(self.G, name ='pos')
 
         # print(self.weightDict)
-        nx.set_node_attributes(self.G, name ='time',values = dict.fromkeys(G.nodes(),0))
+        nx.set_node_attributes(self.G, name ='time',values = dict.fromkeys(G.nodes(),-5))
         nx.set_node_attributes(self.G, name ='weight',values = self.weightDict)
         # nx.set_node_attributes(self.G, 'defector',self.defectorDict)
 
@@ -149,21 +149,19 @@ class graphCrawler:
         return 1 - sum(d_list)/len(d_list)
 
 
-def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=5, avg = 5):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=20, avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
     C0_vals = np.linspace(0.1,0.6,d) #iterate over statrting rate of defectors
-    '''I did a hacky fix here, the paper specified C as
-    the rate of good boyos but we defined it as defectors so I just do 1 - C'''
-    b_vals = np.linspace(0,35,d) # iterate over reward given
+    b_vals = np.linspace(5,35,d) # iterate over reward given
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
             states = []
             sent = []
             print(str(i) + ' ' + str(j))
-            for l in range(3):
-                graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = 1-C0)
+            for l in range(5):
+                graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
                 # buildNetwork.draw_net(graph)
                 myCrawler = graphCrawler(graph, b)#create crawler object
                 myCrawler.iterate(10) #iterate avg number of times than take the mean of the next avg iterations
