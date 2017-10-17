@@ -5,6 +5,7 @@ import numpy as np
 import buildNetwork
 import matplotlib.pyplot as plt
 import time
+from collections import Counter
 
 
 attributes = ['pos','weight','defector','theta','k']
@@ -20,17 +21,24 @@ class graphCrawler:
         self.thetas_dict = nx.get_node_attributes(G, name ='theta')
         self.r_dict = nx.get_node_attributes(G, name ='r')
         self.bottomVal = -150
+        self.degrees = {}
+        for node in G.nodes():
+            self.degrees[node] = len(list(self.G[node].keys()))
+        self.topDegrees = dict(Counter(self.degrees).most_common(int(len(G.nodes)/20)))
 
         if weightDict is None:
-            self.weightDict = dict.fromkeys(G.nodes(),0)
+            self.weightDict = dict.fromkeys(G.nodes(),5)
         if defectorDict is None:
             self.defectorDict = nx.get_node_attributes(self.G, name ='defector')
         if posDict is None:
             self.posDict = nx.get_node_attributes(self.G, name ='pos')
 
         # print(self.weightDict)
-        nx.set_node_attributes(self.G, name ='time',values = dict.fromkeys(G.nodes(),-10))
+
+        nx.set_node_attributes(self.G, name ='time',values = {key: random.randint(-15,0) for key in G.nodes()})
+        # print({key: random.randint(-10,0) for key in G.nodes()})
         nx.set_node_attributes(self.G, name ='weight',values = self.weightDict)
+        nx.set_node_attributes(self.G, name ='degrees',values = self.degrees)
         # nx.set_node_attributes(self.G, 'defector',self.defectorDict)
 
 
@@ -111,18 +119,18 @@ class graphCrawler:
                     changeBool = random.random() < probabilityChange#make decision based on probability
                     if changeBool:
                         self.defectorDict[node] = 1#store difference in defectorness in another dict
+                        timeDict[node] = -15
                 except:
                     continue
             elif defectorDict[node] == 1:
                 time = timeDict[node]
                 try:
-                    expVal = math.exp((-1 * time)/self.k)#find e value
+                    expVal = math.exp((-1 * time)/2)#find e value
                     # print(expVal)
                     probabilityChange = 1 / (1 + expVal)#calculate proability that the original node will copy its neighbor
                     changeBool = random.random() < probabilityChange#make decision based on probability
                     if changeBool:
                         self.defectorDict[node] = 0#store difference in defectorness in another dict
-                        timeDict[node] = -10
                     else:
                         timeDict[node] = timeDict[node] + 1
                 except:
@@ -167,12 +175,21 @@ class graphCrawler:
         d_list = list(defectors.values())
         return 1 - sum(d_list)/len(d_list)
 
+    def get_cooperator_state_weighted(self):
+        defectors = nx.get_node_attributes(self.G, 'defector')
+        numDef = 0
+        print('Top Degrees',self.topDegrees)
+        for i in self.topDegrees.keys():
+            numDef += defectors[i]
 
-def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=15, avg = 5):
+        return numDef/len(self.topDegrees)
+
+
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=.5, d=10, avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
-    C0_vals = np.linspace(0.1,0.6,d) #iterate over statrting rate of defectors
+    C0_vals = np.linspace(0.0,0.6,d) #iterate over statrting rate of defectors
     '''I did a hacky fix here, the paper specified C as
     the rate of good boyos but we defined it as defectors so I just do 1 - C'''
     b_vals = np.linspace(0,35,d) # iterate over reward given
@@ -185,7 +202,7 @@ def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=15, avg = 5):
                 graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = mean_deg, C = C0)
                 # buildNetwork.draw_net(graph)
                 myCrawler = graphCrawler(graph, b)#create crawler object
-                myCrawler.iterate(30) #iterate avg number of times than take the mean of the next avg iterations
+                myCrawler.iterate(50) #iterate avg number of times than take the mean of the next avg iterations
                 for k in range(avg):
                     res = myCrawler.iterate(1)
                     sent.append((sum(res)/len(res)))
@@ -218,29 +235,48 @@ def make_punchline(n=500, gamma=2.5, temp=0.4, mean_deg=6, d=15, avg = 5):
     fig, ax = plt.subplots()
     heatmap = ax.pcolor(out_vals, cmap=plt.cm.RdYlBu, alpha=0.8)
     cbar = fig.colorbar(heatmap, ticks = [0, 0.2, 0.4, 0.6, 0.8, 1])
-    ax.set_xticklabels(b_vals, minor=False)
-    ax.set_yticklabels(C0_vals, minor=False)
+    ax.set_xticklabels(np.around(b_vals,0), minor=False)
+    ax.set_yticklabels(np.around(C0_vals,2), minor=False)
     plt.show()
 
 
 if __name__ == '__main__':
-    n = 1000
+    n = 100
     gamma = 2.5
     temp = 0.4
-    meanDeg = 6
-    c = 0.9
+    meanDeg = 3.5
+    c = 0.0
     graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
-    myCrawler = graphCrawler(graph, 15)
+    myCrawler = graphCrawler(graph, 5)
     buildNetwork.draw_net(myCrawler.G)
-    res = myCrawler.iterate(10)
-    for i in range(50):
-        res = myCrawler.iterate(1)
-        print('Sent:',sum(res)/len(res))
-        print('Cooperator state', myCrawler.get_cooperator_state())
-        buildNetwork.draw_net(myCrawler.G)
-    input()
-    res2 = myCrawler.iterate(10)
-    print(sum(res2)/len(res2))
+    # res = myCrawler.iterate(10)
+    numGraphs = 10
+    top5List = np.zeros((numGraphs,50),dtype ='float_')
+    prcList = np.zeros((numGraphs,50),dtype ='float_')
+    for j in range(numGraphs):
+        graph = buildNetwork.build_synthetic_network(n = n, gamma = gamma, temp = temp, mean_deg = meanDeg, C = c)
+        myCrawler = graphCrawler(graph, 8)
+        for i in range(50):
+            # print(nx.get_node_attributes(myCrawler.G, 'weight'))
+            top5List[j][i] = myCrawler.get_cooperator_state_weighted()
+            prcList[j][i] = 1 - myCrawler.get_cooperator_state()
+            res = myCrawler.iterate(1)
+            defectorDict = nx.get_node_attributes(myCrawler.G, 'defector')
+            for i in myCrawler.topDegrees.keys():
+                defectorDict[i] = 1
+                myCrawler.defectorDict[i] = 1
+            nx.set_node_attributes(myCrawler.G, name ='defector',values = defectorDict)
+            print('Sent:',sum(res)/len(res))
+            print('Cooperator state', myCrawler.get_cooperator_state())
+            # buildNetwork.draw_net(myCrawler.G)
+    top5List = np.mean(top5List, axis=0)
+    prcList = np.mean(prcList, axis=0)
+    plt.plot(np.linspace(1,len(top5List),len(top5List)),top5List,label="5 Highest Degree Nodes")    #linspace(start,end,number of points
+    plt.plot(np.linspace(1,len(top5List),len(top5List)),prcList,label="All Nodes")    #linspace(start,end,number of points)
+    plt.legend()
+    plt.xlabel('Iterations')
+    plt.ylabel('Percent Defector')
+    plt.show()
 
     # coops = []
     # for _ in range(100):
