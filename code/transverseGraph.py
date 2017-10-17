@@ -149,7 +149,7 @@ class graphCrawler:
         return 1 - sum(d_list)/len(d_list)
 
 
-def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=6, d=20, avg = 5):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=3.5, d=20, avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
