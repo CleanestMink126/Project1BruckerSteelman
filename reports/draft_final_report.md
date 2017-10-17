@@ -26,7 +26,7 @@ Where *alpha* is a parameter based on the mean degree of the network, and *gamma
 
 **Figure 1.** A synthetic complex network constructed with *N* = 2500.
 
-As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-dimensional polar space. Two nodes' distance in this space represent their similarity, not their physical distance; two nodes that are very close to each other are very similar. Also note that low values of *r* are very rare, as they correspond to high values of *k*, which has a very low probability in a power law distribution.
+As can be seen in *Figure 1*, The values *r* and *theta* map each node into a 2-dimensional polar space. Two nodes' distance in this space represent their similarity, not their physical distance; two nodes that are close to each other are similar. Also note that low values of *r* are rare, as they correspond to high values of *k*, which has a low probability in a power law distribution.
 
 ##### Greedy Routing
 
@@ -88,11 +88,11 @@ Our graph is more noisy and less polarized than Kleineberg et al's, which is due
 
 **Figure 6.** The proportion of cooperating nodes over time. Simulated in a graph with *N* = 1000, *gamma* = 2.5, mean degree = 6, *b* = 25, and *C0* ~= 0.2.
 
-We illustrate this bistable property through the proportion of cooperators over time. As *Figure 6* shows, with a high reward for successful delivery (*b* = 25) the proportion of cooperators increases rapidly, even with a low initial proportion of cooperators. Similarly, the proportion of successful message deliveries also increases, although not at the exact same rate as the proportion of cooperators, since there will always be some failures due to loops in the message sending process. This graph also displays behavior very similar to Kleineberg et al's (Figure 3a, [[1]](www.nature.com/articles/s41598-017-02910-x))
+We illustrate this bistable property through the proportion of cooperators over time. As *Figure 6* shows, with a high reward for successful delivery (*b* = 25) the proportion of cooperators increases rapidly, even with a low initial proportion of cooperators. Similarly, the proportion of successful message deliveries also increases, although not at the exact same rate as the proportion of cooperators, since there will always be some failures due to loops in the message sending process. This graph also displays behavior similar to Kleineberg et al's (Figure 3a, [[1]](www.nature.com/articles/s41598-017-02910-x))
 
 #### An Alternative System of Defecting
 
-In the algorithm used by Kleineberg et al., each node decides whether to defect by observing the state of its connected nodes and randomly copying the behavior of one neighbor. We found this behavior to be an overly complex methodology that doesn't map very well to how actual IoT devices behave, since actual IoT devices don't directly observe the functions of other devices. Instead, most IoT devices act on their own and behave based on their own state. We propose a simplified version of the "defector decision" in which each node decides whether to defect based solely on the internal optimization of its payoff. This maps more closely to the real-world behavior of IoT devices: a device may have a built-in setting to disable itself if it's consuming too much power, or the user of the device may also choose to disable it if it uses excessive power.
+In the algorithm used by Kleineberg et al., each node decides whether to defect by observing the state of its connected nodes and randomly copying the behavior of one neighbor. We found this behavior to be an overly complex methodology that doesn't map well to how actual IoT devices behave, since actual IoT devices don't directly observe the functions of other devices. Instead, most IoT devices act on their own and behave based on their own state. We propose a simplified version of the "defector decision" in which each node decides whether to defect based solely on the internal optimization of its payoff. This maps more closely to the real-world behavior of IoT devices: a device may have a built-in setting to disable itself if it's consuming too much power, or the user of the device may also choose to disable it if it uses excessive power.
 
 #### Internal Greedy Decision-Making
 
