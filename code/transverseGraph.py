@@ -185,14 +185,14 @@ class graphCrawler:
         return numDef/len(self.topDegrees)
 
 
-def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=.5, d=20, avg = 5):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=3.5, d=20, avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
     C0_vals = np.linspace(0.0,0.6,d) #iterate over statrting rate of defectors
     '''I did a hacky fix here, the paper specified C as
     the rate of good boyos but we defined it as defectors so I just do 1 - C'''
-    b_vals = np.linspace(0,35,d) # iterate over reward given
+    b_vals = np.linspace(0,25,d) # iterate over reward given
     for i, C0 in enumerate(C0_vals):
         for j, b in enumerate(b_vals):
             states = []
