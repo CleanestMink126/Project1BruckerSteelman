@@ -185,7 +185,7 @@ class graphCrawler:
         return numDef/len(self.topDegrees)
 
 
-def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=.5, d=10, avg = 5):
+def make_punchline(n=100, gamma=2.5, temp=0.4, mean_deg=.5, d=20, avg = 5):
     now = time.time()#get current time
     out_vals = np.zeros((d,d))#initialize array to store information
     sent_vals = np.zeros((d,d))
